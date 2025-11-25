@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import re
 from dataclasses import dataclass
 from datetime import datetime
@@ -28,6 +29,11 @@ def norm_space(value: object) -> str:
         return re.sub(r"\s+", " ", value).strip()
     # pandas may give numpy scalars; cast to string first
     return re.sub(r"\s+", " ", str(value)).strip()
+
+
+def nonempty(value: object) -> bool:
+    """Return True when a value is not null/empty/whitespace-only."""
+    return bool(norm_space(value))
 
 
 def norm_phone(value: object) -> str:
@@ -78,3 +84,26 @@ def note_with_reason(note: str, shot: ScreenshotResult) -> str:
     if shot.path or not shot.reason:
         return note
     return f"{note} (screenshot-error: {shot.reason})"
+
+
+async def with_retry(
+    fn,
+    *,
+    attempts: int = 3,
+    delay_ms: int = 150,
+    backoff: float = 1.5,
+) -> object:
+    """Jalankan coroutine dengan retry dan backoff sederhana."""
+    last_exc: Exception | None = None
+    wait = delay_ms / 1000
+    for i in range(attempts):
+        try:
+            return await fn()
+        except Exception as exc:  # noqa: BLE001
+            last_exc = exc
+            if i == attempts - 1:
+                break
+            await asyncio.sleep(wait)
+            wait *= backoff
+    if last_exc:
+        raise last_exc

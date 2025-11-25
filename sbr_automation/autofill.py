@@ -1,80 +1,93 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
-from typing import Optional
+from pathlib import Path
+from typing import Dict
 
-from playwright.async_api import Error as PlaywrightError, Locator, Page
+from playwright.async_api import Error as PlaywrightError, Page
 
 from .config import AutofillOptions, RuntimeConfig
-from .excel_loader import (
-    REQUIRED_COLUMNS_AUTOFILL,
-    ensure_required_columns,
-    load_dataframe,
-    slice_rows,
-)
-from .logbook import LogBook, LogEvent
-from .playwright_helpers import attach_browser, pick_active_page, slow_pause
+from .form_filler import fill_form
+from .loader import MATCH_BY_REQUIRED_COLUMNS, load_rows
+from .logbook import LogBook, LogEvent, update_run_index
+from .models import RowContext
+from .navigator import open_form_page
+from .playwright_helpers import attach_browser, ensure_cdp_ready, pick_active_page
+from .resume import load_resume_entries, resolve_resume_log_path
+from .submitter import is_finalized_form, is_locked_page, submit_form
 from .table_actions import click_edit_by_index, click_edit_by_text
 from .utils import (
     ScreenshotResult,
     describe_exception,
     note_with_reason,
-    norm_float,
-    norm_phone,
-    norm_space,
     take_screenshot,
     timestamp,
 )
 
 
-@dataclass(slots=True)
-class RowContext:
-    table_index: int
-    display_index: int
-    nama: str
-    status: str
-    phone: str
-    email: str
-    latitude: str
-    longitude: str
-    sumber: str
-    catatan: str
+_ROW_DIVIDER = "=" * 72
+_ROW_SUBDIVIDER = "-" * 72
 
 
-PHONE_COLUMN_CANDIDATES = (
-    "Nomor Telepon",
-    "nomor_telepon",
-    "No Telepon",
-    "No. Telepon",
-    "Telepon",
-    "Telepon/HP",
-    "Phone",
-)
-
-STATUS_NORMALIZATION = {
-    "aktif nonrespons": "Aktif Nonrespon",
-    "belum berproduksi": "Belum Beroperasi/Berproduksi",
-}
+def _format_match_value(ctx: RowContext, match_by: str) -> str:
+    if match_by == "index":
+        return "" if ctx.table_index is None else str(ctx.table_index)
+    if match_by == "idsbr":
+        return ctx.idsbr or ""
+    if match_by == "name":
+        return ctx.nama or ""
+    return ""
 
 
-def _select_phone_value(df_row) -> object:
-    columns = getattr(df_row, "index", ())
-    for column in PHONE_COLUMN_CANDIDATES:
-        if column in columns:
-            value = df_row.get(column)
-            if norm_space(value):
-                return value
-    for column in PHONE_COLUMN_CANDIDATES:
-        if column in columns:
-            return df_row.get(column)
-    return df_row.get("Nomor Telepon")
+def _print_row_header(ctx: RowContext, match_by: str, match_value: str) -> None:
+    name = ctx.nama or "(tanpa nama)"
+    status_label = ctx.status or "-"
+    target = match_value or "-"
+    print(f"\n{_ROW_DIVIDER}")
+    print(f"Baris {ctx.display_index}: {name}")
+    print(f"Status : {status_label}")
+    print(f"Target : {target} (match_by={match_by})")
+    print(_ROW_SUBDIVIDER)
 
 
-def _normalize_status(status: str) -> str:
-    if not status:
-        return ""
-    return STATUS_NORMALIZATION.get(status.lower(), status)
+def _print_resume_skip(ctx: RowContext, prev_level: str, prev_stage: str, note_detail: str) -> None:
+    name = ctx.nama or "(tanpa nama)"
+    print(f"\n{_ROW_DIVIDER}")
+    print(f"Baris {ctx.display_index}: {name}")
+    print("Status : Dilewati (mode resume)")
+    extras = []
+    if prev_level:
+        extras.append(f"Status sebelumnya: {prev_level}")
+    if prev_stage:
+        extras.append(f"Stage: {prev_stage}")
+    if note_detail:
+        extras.append(f"Catatan: {note_detail}")
+    if extras:
+        print("Info   : " + " | ".join(extras))
+    print(_ROW_SUBDIVIDER)
+
+
+def _print_run_summary(
+    ok_rows: int,
+    error_rows: int,
+    skipped_rows: int,
+    logbook: LogBook,
+    config: RuntimeConfig,
+    *,
+    dry_run: bool,
+) -> None:
+    heading = "Dry-run selesai." if dry_run else "Selesai."
+    print(f"\n{_ROW_DIVIDER}")
+    print(heading)
+    print(f"  - Baris sukses    : {ok_rows}")
+    print(f"  - Baris bermasalah: {error_rows}")
+    print(f"  - Baris dilewati  : {skipped_rows}")
+    print(f"  - Log CSV         : {logbook.path}")
+    if logbook.report_path:
+        print(f"  - Laporan HTML    : {logbook.report_path}")
+    if getattr(config, "run_id", ""):
+        print(f"  - Run ID          : {config.run_id}")
+    print(_ROW_SUBDIVIDER)
 
 
 async def _log_screenshot(
@@ -88,356 +101,37 @@ async def _log_screenshot(
     return await take_screenshot(page, directory, label)
 
 
-async def _is_locked_page(page: Page) -> bool:
-    patterns = [
-        re.compile("tidak bisa melakukan edit", re.I),
-        re.compile("sedang diedit oleh user lain", re.I),
-    ]
-    for pattern in patterns:
-        try:
-            locator = page.get_by_text(pattern)
-            await locator.wait_for(state="visible", timeout=1500)
-            return True
-        except Exception:  # noqa: BLE001
-            continue
-
-    try:
-        back_btn = page.get_by_role("button", name=re.compile("Back to Home", re.I))
-        await back_btn.wait_for(state="visible", timeout=1500)
-        return True
-    except Exception:  # noqa: BLE001
-        pass
-    return False
-
-
-async def _apply_status(page: Page, ctx: RowContext, config: RuntimeConfig) -> None:
-    if not ctx.status:
-        return
-
-    radio_id = config.status_id_map.get(ctx.status)
-    if radio_id:
-        radio = page.locator(f"#{radio_id}")
-        try:
-            await radio.wait_for(state="attached", timeout=2000)
-            try:
-                await radio.check()
-            except Exception:
-                await radio.click(force=True)
-            print(f"    Status usaha diatur ke: {ctx.status}")
-        except Exception as exc:  # noqa: BLE001
-            print(f"    Gagal set status '{ctx.status}': {describe_exception(exc)}")
-    else:
-        lbl = page.locator("label").filter(has_text=re.compile(re.escape(ctx.status), re.I)).first
-        try:
-            await lbl.wait_for(state="visible", timeout=2000)
-            target_id = await lbl.get_attribute("for")
-            if target_id:
-                await page.locator(f"#{target_id}").check()
-            else:
-                await lbl.click(force=True)
-            print(f"    Status usaha diisi melalui label fallback: {ctx.status}")
-        except Exception as exc:  # noqa: BLE001
-            print(f"    Gagal menemukan label status '{ctx.status}': {describe_exception(exc)}")
-
-    await slow_pause(page, config)
-
-
-async def _focus_identitas_section(page: Page) -> None:
-    try:
-        ident_section = page.locator(
-            "xpath=//*[self::h4 or self::h5][contains(., 'IDENTITAS USAHA/PERUSAHAAN')]"
-            "/ancestor::*[contains(@class,'card') or contains(@class,'section')][1]"
-        )
-        if await ident_section.count() > 0:
-            await ident_section.scroll_into_view_if_needed()
-    except Exception as exc:  # noqa: BLE001
-        print(f"    Gagal memfokus bagian Identitas: {describe_exception(exc)}")
-
-
-async def _fill_phone(page: Page, phone: str) -> None:
-    try:
-        tel_input = (
-            page.get_by_placeholder(re.compile(r"^Nomor\s*Telepon$", re.I))
-            .or_(page.locator("input#nomor_telepon, input[name='nomor_telepon'], input[name='no_telp'], input[name='telepon']"))
-        ).first
-        await tel_input.wait_for(state="visible", timeout=1500)
-        if phone:
-            await tel_input.fill("")
-            await tel_input.fill(phone)
-            print(f"    Nomor telepon diisi: {phone}")
-        else:
-            print("    Nomor telepon dilewati (kosong).")
-    except Exception as exc:  # noqa: BLE001
-        print(f"    Pengisian nomor telepon bermasalah: {describe_exception(exc)}")
-
-
-async def _fill_email(page: Page, ctx: RowContext) -> None:
-    try:
-        cb_email = page.locator("#check-email").first
-        if await cb_email.count() > 0:
-            await cb_email.wait_for(state="attached", timeout=500)
-
-        email_input = (
-            page.locator("input#email, input[name='email'], input[type='email']")
-            .or_(page.get_by_placeholder(re.compile(r"^email$", re.I)))
-        ).first
-
-        web_state = await page.evaluate(
-            """
-            () => {
-                const inp = document.querySelector('input#email, input[name="email"], input[type="email"]');
-                return inp ? (inp.value || '').trim() : '';
-            }
-            """
-        )
-        web_value = web_state.strip()
-
-        if ctx.email:
-            try:
-                await email_input.wait_for(state="visible", timeout=400)
-                await email_input.fill("")
-                await email_input.fill(ctx.email)
-                print(f"    Email diisi: {ctx.email}")
-            except Exception as exc:  # noqa: BLE001
-                print(f"    Gagal mengisi email: {describe_exception(exc)}")
-        elif web_value:
-            print(f"    Email sudah ada di web, dibiarkan: {web_value}")
-        else:
-            try:
-                await page.evaluate(
-                    """
-                    () => {
-                        const cb = document.querySelector('#check-email');
-                        const inp = document.querySelector('input#email, input[name="email"], input[type="email"]');
-                        if (cb) {
-                            cb.checked = false;
-                            cb.dispatchEvent(new Event('input', { bubbles: true }));
-                            cb.dispatchEvent(new Event('change', { bubbles: true }));
-                        }
-                        if (inp) {
-                            inp.value = '';
-                            inp.dispatchEvent(new Event('input', { bubbles: true }));
-                            inp.dispatchEvent(new Event('change', { bubbles: true }));
-                        }
-                    }
-                    """
-                )
-                print("    Toggle email dimatikan (kosong).")
-            except Exception as exc:  # noqa: BLE001
-                print(f"    Gagal mematikan toggle email: {describe_exception(exc)}")
-    except Exception as exc:  # noqa: BLE001
-        print(f"    Pengelolaan email bermasalah: {describe_exception(exc)}")
-
-
-async def _fill_coordinates(page: Page, ctx: RowContext) -> None:
-    if ctx.latitude:
-        try:
-            lat_input = (
-                page.locator("input#latitude, input[name='latitude']")
-                .or_(page.get_by_placeholder(re.compile(r"^latitude", re.I)))
-            ).first
-            await lat_input.wait_for(state="visible", timeout=1500)
-            await lat_input.fill("")
-            await lat_input.fill(ctx.latitude)
-            print(f"    Latitude diisi: {ctx.latitude}")
-        except Exception as exc:  # noqa: BLE001
-            print(f"    Gagal mengisi latitude: {describe_exception(exc)}")
-    else:
-        print("    Latitude dilewati.")
-
-    if ctx.longitude:
-        try:
-            lon_input = (
-                page.locator("input#longitude, input[name='longitude']")
-                .or_(page.get_by_placeholder(re.compile(r"^longitude", re.I)))
-            ).first
-            await lon_input.wait_for(state="visible", timeout=1500)
-            await lon_input.fill("")
-            await lon_input.fill(ctx.longitude)
-            print(f"    Longitude diisi: {ctx.longitude}")
-        except Exception as exc:  # noqa: BLE001
-            print(f"    Gagal mengisi longitude: {describe_exception(exc)}")
-    else:
-        print("    Longitude dilewati.")
-
-
-async def _fill_identitas_section(page: Page, ctx: RowContext) -> None:
-    await _focus_identitas_section(page)
-    await _fill_phone(page, ctx.phone)
-    await _fill_email(page, ctx)
-    await _fill_coordinates(page, ctx)
-
-
-async def _fill_additional_fields(page: Page, ctx: RowContext, config: RuntimeConfig) -> None:
-    if ctx.sumber:
-        try:
-            await page.get_by_placeholder(re.compile("Sumber Profiling", re.I)).fill(ctx.sumber)
-            print(f"    Sumber Profiling diisi: {ctx.sumber}")
-        except Exception as exc:  # noqa: BLE001
-            print(f"    Field Sumber Profiling tidak ditemukan: {describe_exception(exc)}")
-        await slow_pause(page, config)
-
-    if ctx.catatan:
-        try:
-            await page.wait_for_selector("#catatan_profiling", state="visible", timeout=3000)
-            await page.fill("#catatan_profiling", ctx.catatan)
-            await page.evaluate(
-                """
-                () => {
-                    const el = document.querySelector('#catatan_profiling');
-                    if (el) {
-                        el.dispatchEvent(new Event('input', { bubbles: true }));
-                        el.dispatchEvent(new Event('change', { bubbles: true }));
-                    }
-                }
-                """
-            )
-            print(f"    Catatan diisi ({len(ctx.catatan)} karakter).")
-        except Exception as exc:  # noqa: BLE001
-            print(f"    Gagal mengisi catatan: {describe_exception(exc)}")
-        await slow_pause(page, config)
-
-
-async def _fill_form(page: Page, ctx: RowContext, config: RuntimeConfig) -> None:
-    print("  Mengisi form...")
-    await _apply_status(page, ctx, config)
-    await _fill_identitas_section(page, ctx)
-    await _fill_additional_fields(page, ctx, config)
-    print("  Form selesai diisi.")
-
-
-async def _submit_and_handle(page: Page, ctx: RowContext, config: RuntimeConfig) -> str:
-    btn_role = page.get_by_role("button", name=re.compile("Submit Final", re.I))
-    btn_text = page.locator("text=Submit Final").first
-
-    async def try_click(locator: Locator) -> bool:
-        try:
-            if await locator.is_visible(timeout=800):
-                await locator.click()
-                return True
-        except Exception:
-            return False
-        return False
-
-    if not (await try_click(btn_role) or await try_click(btn_text)):
-        return "NO_SUBMIT_BUTTON"
-
-    await page.wait_for_timeout(config.pause_after_submit_ms)
-
-    try:
-        err = page.get_by_text(re.compile("Masih terdapat isian yang harus diperbaiki", re.I))
-        await err.wait_for(state="visible", timeout=1000)
-        ok = page.get_by_role("button", name=re.compile("^OK$", re.I))
-        if await ok.is_visible():
-            await ok.click()
-        return "ERROR_FILL"
-    except Exception:
-        pass
-
-    try:
-        kons = page.get_by_text(re.compile("Cek Konsistensi", re.I))
-        await kons.wait_for(state="visible", timeout=800)
-        ign = page.get_by_role("button", name=re.compile("^Ignore$", re.I))
-        if await ign.is_visible():
-            await ign.click(force=True)
-            await page.wait_for_timeout(250)
-    except Exception:
-        pass
-
-    clicked_confirm = False
-    for _ in range(10):
-        ya = page.locator("div.modal.show, div[role='dialog']").locator(
-            "button:has-text('Ya, Submit'), a:has-text('Ya, Submit'), button:has-text('Ya, Submit!'), a:has-text('Ya, Submit!')"
-        ).first
-        if await ya.count() > 0 and await ya.is_visible():
-            try:
-                await ya.click(force=True)
-            except Exception:
-                await page.evaluate(
-                    """
-                    () => {
-                        const modal = document.querySelector('.modal.show,[role="dialog"]');
-                        if (!modal) return;
-                        const btn = [...modal.querySelectorAll('button,a')].find(el =>
-                            /ya\\s*,?\\s*submit!?/i.test((el.textContent || '').trim())
-                        );
-                        if (btn) btn.click();
-                    }
-                    """
-                )
-            clicked_confirm = True
-            break
-        await page.wait_for_timeout(250)
-
-    async def submit_still_visible() -> bool:
-        try:
-            if await btn_role.is_visible(timeout=200):
-                return True
-        except Exception:
-            pass
-        try:
-            if await btn_text.is_visible(timeout=200):
-                return True
-        except Exception:
-            pass
-        return False
-
-    success_seen = False
-    for _ in range(16):
-        try:
-            sm = page.get_by_text(re.compile("Success|Berhasil submit data final", re.I))
-            if await sm.is_visible(timeout=120):
-                okb = page.get_by_role("button", name=re.compile("^OK$", re.I))
-                if await okb.is_visible():
-                    await okb.click(force=True)
-                    await page.wait_for_timeout(150)
-                success_seen = True
-                break
-        except Exception:
-            pass
-
-        toast = page.locator(".toast, .alert-success, .swal2-popup").first
-        try:
-            if await toast.is_visible(timeout=120):
-                success_seen = True
-                break
-        except Exception:
-            pass
-
-        if not await submit_still_visible():
-            success_seen = True
-            break
-
-        await page.wait_for_timeout(200)
-
-    if success_seen:
-        return "OK"
-    if clicked_confirm:
-        return "NO_SUCCESS_SIGNAL"
-    return "NO_CONFIRM"
-
-
-def _context_from_row(df_row, table_index: int, display_index: int) -> RowContext:
-    return RowContext(
-        table_index=table_index,
-        display_index=display_index,
-        nama=norm_space(df_row.get("Nama")),
-        status=_normalize_status(norm_space(df_row.get("Status"))),
-        phone=norm_phone(_select_phone_value(df_row)),
-        email=norm_space(df_row.get("Email")),
-        latitude=norm_float(df_row.get("Latitude")),
-        longitude=norm_float(df_row.get("Longitude")),
-        sumber=norm_space(df_row.get("Sumber")),
-        catatan=norm_space(df_row.get("Catatan")),
-    )
-
-
 async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> None:
-    df = load_dataframe(options.excel)
-    ensure_required_columns(df, REQUIRED_COLUMNS_AUTOFILL)
+    contexts, start_display, end_display = load_rows(options, config)
 
-    start_idx, end_idx = slice_rows(df, options.start_row, options.end_row)
-    logbook = LogBook(config.log_dir / "log_sbr_autofill.csv")
+    resume_entries: Dict[int, dict] = {}
+    log_filename = f"log_sbr_autofill_{config.run_id}.csv" if config.run_id else "log_sbr_autofill.csv"
+    log_path = config.log_dir / log_filename
+    resume_log_path = log_path
+    if options.resume:
+        resume_log_path = resolve_resume_log_path(log_path)
+        if resume_log_path != log_path and resume_log_path.exists():
+            print(f"Mode resume membaca log sebelumnya: {resume_log_path}")
+        resume_entries = load_resume_entries(
+            resume_log_path,
+            start_display=start_display,
+            end_display=end_display,
+        )
+
+    if options.dry_run:
+        print("Mode dry-run aktif: tombol Edit hanya diverifikasi, form tidak dibuka.")
+
+    report_filename = log_filename.replace(".csv", ".html")
+    logbook = LogBook(log_path, report_path=config.log_dir / report_filename)
+
+    print("Memeriksa koneksi Chrome (CDP)...")
+    try:
+        ensure_cdp_ready(config)
+    except RuntimeError as exc:
+        print(f"Gagal memverifikasi Chrome CDP: {exc}")
+        raise
+    else:
+        print("Chrome CDP siap digunakan.")
 
     ok_rows = 0
     skipped_rows = 0
@@ -446,24 +140,78 @@ async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> N
     async with attach_browser(config) as (_, context):
         page = pick_active_page(context)
 
-        for i in range(start_idx, end_idx):
-            row = df.iloc[i]
-            ctx = _context_from_row(row, i, i + 1)
+        for ctx in contexts:
+            if options.resume and ctx.display_index in resume_entries:
+                prev = resume_entries.pop(ctx.display_index)
+                prev_level = prev.get("level", "OK")
+                prev_stage = prev.get("stage", "")
+                note_detail = prev.get("note", "")
+                _print_resume_skip(ctx, prev_level, prev_stage, note_detail)
+                extra = f"Status sebelumnya: {prev_level}"
+                if prev_stage:
+                    extra += f" | Stage: {prev_stage}"
+                if note_detail:
+                    extra += f" | Catatan: {note_detail}"
+                logbook.append(
+                    LogEvent(
+                        ts=timestamp(),
+                        row_index=ctx.display_index,
+                        level="OK",
+                        stage="RESUME_SKIP",
+                        idsbr=ctx.idsbr,
+                        nama=ctx.nama,
+                        match_value=ctx.idsbr or ctx.nama,
+                        note=f"Dilewati (resume). {extra}",
+                        screenshot="",
+                    )
+                )
+                skipped_rows += 1
+                continue
 
-            print(f"\n=== Baris {ctx.display_index} :: {ctx.nama or '(tanpa nama)'} :: Status = {ctx.status or '-'} ===")
-
+            match_value = _format_match_value(ctx, options.match_by)
+            _print_row_header(ctx, options.match_by, match_value)
             clicked = False
             try:
                 if options.match_by == "index":
-                    clicked = await click_edit_by_index(page, ctx.table_index, timeout=config.max_wait_ms)
+                    clicked = await click_edit_by_index(
+                        page,
+                        ctx.table_index,
+                        timeout=config.max_wait_ms,
+                        perform_click=not options.dry_run,
+                    )
                 elif options.match_by == "idsbr":
-                    clicked = await click_edit_by_text(page, norm_space(row.get("IDSBR")), timeout=config.max_wait_ms)
+                    clicked = await click_edit_by_text(
+                        page,
+                        match_value,
+                        timeout=config.max_wait_ms,
+                        perform_click=not options.dry_run,
+                    )
                 elif options.match_by == "name":
-                    clicked = await click_edit_by_text(page, ctx.nama, timeout=config.max_wait_ms)
+                    clicked = await click_edit_by_text(
+                        page,
+                        match_value,
+                        timeout=config.max_wait_ms,
+                        perform_click=not options.dry_run,
+                    )
             except Exception as exc:  # noqa: BLE001
                 shot = await _log_screenshot(page, f"exception_click_edit_{ctx.display_index}", config)
-                note = note_with_reason(f"CLICK_EDIT_EXCEPTION: {describe_exception(exc)}", shot)
-                logbook.append(LogEvent(timestamp(), ctx.display_index, "ERROR", "CLICK_EDIT", note, shot.path or ""))
+                note = note_with_reason(
+                    f"CODE:CLICK_EDIT_EXCEPTION (target {options.match_by}={match_value or '-'}) : {describe_exception(exc)}",
+                    shot,
+                )
+                logbook.append(
+                    LogEvent(
+                        ts=timestamp(),
+                        row_index=ctx.display_index,
+                        level="ERROR",
+                        stage="CLICK_EDIT",
+                        idsbr=ctx.idsbr,
+                        nama=ctx.nama,
+                        match_value=match_value,
+                        note=note,
+                        screenshot=shot.path or "",
+                    )
+                )
                 error_rows += 1
                 if options.stop_on_error:
                     break
@@ -471,11 +219,43 @@ async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> N
 
             if not clicked:
                 shot = await _log_screenshot(page, f"gagal_click_edit_{ctx.display_index}", config)
-                note = note_with_reason("Tombol Edit tidak ditemukan", shot)
-                logbook.append(LogEvent(timestamp(), ctx.display_index, "ERROR", "CLICK_EDIT", note, shot.path or ""))
+                note = note_with_reason(
+                    f"CODE:CLICK_EDIT_TIMEOUT Tombol Edit tidak ditemukan atau tidak bisa diklik (target {options.match_by}={match_value or '-'})",
+                    shot,
+                )
+                logbook.append(
+                    LogEvent(
+                        ts=timestamp(),
+                        row_index=ctx.display_index,
+                        level="ERROR",
+                        stage="CLICK_EDIT",
+                        idsbr=ctx.idsbr,
+                        nama=ctx.nama,
+                        match_value=match_value,
+                        note=note,
+                        screenshot=shot.path or "",
+                    )
+                )
                 error_rows += 1
                 if options.stop_on_error:
                     break
+                continue
+
+            if options.dry_run:
+                logbook.append(
+                    LogEvent(
+                        ts=timestamp(),
+                        row_index=ctx.display_index,
+                        level="OK",
+                        stage="DRY_RUN",
+                        idsbr=ctx.idsbr,
+                        nama=ctx.nama,
+                        match_value=match_value,
+                        note="Tombol Edit ditemukan (dry-run, form tidak dibuka).",
+                        screenshot="",
+                    )
+                )
+                ok_rows += 1
                 continue
 
             try:
@@ -485,28 +265,97 @@ async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> N
             except PlaywrightError:
                 pass
 
-            await page.wait_for_timeout(config.pause_after_edit_ms)
+            new_page, open_note, open_error = await open_form_page(
+                context,
+                page,
+                match_value=match_value,
+                fallback_text=match_value or ctx.idsbr or ctx.nama,
+                config=config,
+            )
 
-            try:
-                new_page = await context.wait_for_event("page", timeout=config.max_wait_ms)
-            except PlaywrightError as exc:
+            if not new_page:
                 shot = await _log_screenshot(page, f"no_new_tab_{ctx.display_index}", config)
-                note = note_with_reason(f"Tidak ada tab form: {describe_exception(exc)}", shot)
-                logbook.append(LogEvent(timestamp(), ctx.display_index, "ERROR", "OPEN_TAB", note, shot.path or ""))
+                detail = open_error or "CODE:OPEN_TAB_NO_PAGE Tidak ada tab form."
+                note = note_with_reason(detail, shot)
+                logbook.append(
+                    LogEvent(
+                        ts=timestamp(),
+                        row_index=ctx.display_index,
+                        level="ERROR",
+                        stage="OPEN_TAB",
+                        idsbr=ctx.idsbr,
+                        nama=ctx.nama,
+                        match_value=match_value,
+                        note=note,
+                        screenshot=shot.path or "",
+                    )
+                )
                 error_rows += 1
                 if options.stop_on_error:
                     break
                 continue
 
             await new_page.bring_to_front()
+            if open_note:
+                logbook.append(
+                    LogEvent(
+                        ts=timestamp(),
+                        row_index=ctx.display_index,
+                        level="OK",
+                        stage="OPEN_TAB",
+                        idsbr=ctx.idsbr,
+                        nama=ctx.nama,
+                        match_value=match_value,
+                        note=open_note,
+                        screenshot="",
+                    )
+                )
 
-            if await _is_locked_page(new_page):
+            try:
+                if await is_finalized_form(new_page):
+                    print("    [Lewati] Form sudah berstatus final (hanya ada Cancel Submit).")
+                    logbook.append(
+                        LogEvent(
+                            ts=timestamp(),
+                            row_index=ctx.display_index,
+                            level="OK",
+                            stage="FINAL_SKIP",
+                            idsbr=ctx.idsbr,
+                            nama=ctx.nama,
+                            match_value=match_value,
+                            note="CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).",
+                            screenshot="",
+                        )
+                    )
+                    try:
+                        await new_page.close()
+                    except PlaywrightError:
+                        pass
+                    await page.bring_to_front()
+                    skipped_rows += 1
+                    continue
+            except Exception as exc:  # noqa: BLE001
+                print(f"    [Cek] Gagal memeriksa status final: {describe_exception(exc)}")
+
+            if await is_locked_page(new_page):
                 shot = await _log_screenshot(new_page, f"locked_{ctx.display_index}", config)
                 note = note_with_reason(
-                    "FORM_LOCKED: Usaha sedang diedit oleh pengguna lain. Tutup tab sebelum lanjut.", shot
+                    "CODE:FORM_LOCKED Usaha sedang diedit oleh pengguna lain. Tutup tab sebelum lanjut.", shot
                 )
-                print("  Lock terdeteksi: usaha sedang dibuka oleh pengguna lain. Melewati baris.")
-                logbook.append(LogEvent(timestamp(), ctx.display_index, "WARN", "ACCESS", note, shot.path or ""))
+                print("    [Lewati] Lock terdeteksi: usaha sedang dibuka oleh pengguna lain.")
+                logbook.append(
+                    LogEvent(
+                        ts=timestamp(),
+                        row_index=ctx.display_index,
+                        level="WARN",
+                        stage="ACCESS",
+                        idsbr=ctx.idsbr,
+                        nama=ctx.nama,
+                        match_value=match_value,
+                        note=note,
+                        screenshot=shot.path or "",
+                    )
+                )
                 try:
                     await new_page.close()
                 except PlaywrightError:
@@ -516,12 +365,42 @@ async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> N
                 continue
 
             try:
-                await _fill_form(new_page, ctx, config)
-                logbook.append(LogEvent(timestamp(), ctx.display_index, "OK", "FILL", "Form terisi"))
+                fill_summary = await fill_form(new_page, ctx, config)
+                updated = int(fill_summary.get("updated", 0))
+                skipped = int(fill_summary.get("skipped", 0))
+                errors = fill_summary.get("errors", [])
+                note_fill = f"Form terisi (update={updated}, skip={skipped})"
+                if errors:
+                    note_fill += f" | Kendala: {', '.join(errors)}"
+                logbook.append(
+                    LogEvent(
+                        ts=timestamp(),
+                        row_index=ctx.display_index,
+                        level="OK",
+                        stage="FILL",
+                        idsbr=ctx.idsbr,
+                        nama=ctx.nama,
+                        match_value=match_value,
+                        note=note_fill,
+                        screenshot="",
+                    )
+                )
             except Exception as exc:  # noqa: BLE001
                 shot = await _log_screenshot(new_page, f"exception_fill_form_{ctx.display_index}", config)
                 note = note_with_reason(f"Exception isi form: {describe_exception(exc)}", shot)
-                logbook.append(LogEvent(timestamp(), ctx.display_index, "ERROR", "FILL", note, shot.path or ""))
+                logbook.append(
+                    LogEvent(
+                        ts=timestamp(),
+                        row_index=ctx.display_index,
+                        level="ERROR",
+                        stage="FILL",
+                        idsbr=ctx.idsbr,
+                        nama=ctx.nama,
+                        match_value=match_value,
+                        note=note,
+                        screenshot=shot.path or "",
+                    )
+                )
                 error_rows += 1
                 try:
                     await new_page.close()
@@ -534,11 +413,28 @@ async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> N
                     continue
 
             try:
-                result = await _submit_and_handle(new_page, ctx, config)
-                if result != "OK":
-                    shot = await _log_screenshot(new_page, f"submit_issue_{ctx.display_index}_{result}", config)
-                    note = note_with_reason(result, shot)
-                    logbook.append(LogEvent(timestamp(), ctx.display_index, "ERROR", "SUBMIT", note, shot.path or ""))
+                result = await submit_form(new_page, ctx, config)
+                if result.code != "OK":
+                    shot = await _log_screenshot(
+                        new_page, f"submit_issue_{ctx.display_index}_{result.code}", config
+                    )
+                    detail_note = result.code
+                    if result.detail:
+                        detail_note = f"{result.code} | {result.detail}"
+                    note = note_with_reason(detail_note, shot)
+                    logbook.append(
+                        LogEvent(
+                            ts=timestamp(),
+                            row_index=ctx.display_index,
+                            level="ERROR",
+                            stage="SUBMIT",
+                            idsbr=ctx.idsbr,
+                            nama=ctx.nama,
+                            match_value=match_value,
+                            note=note,
+                            screenshot=shot.path or "",
+                        )
+                    )
                     error_rows += 1
                     try:
                         await new_page.close()
@@ -549,11 +445,36 @@ async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> N
                         break
                     continue
                 else:
-                    logbook.append(LogEvent(timestamp(), ctx.display_index, "OK", "SUBMIT", "Submit final sukses"))
+                    success_note = result.detail or "Submit final sukses"
+                    logbook.append(
+                        LogEvent(
+                            ts=timestamp(),
+                            row_index=ctx.display_index,
+                            level="OK",
+                            stage="SUBMIT",
+                            idsbr=ctx.idsbr,
+                            nama=ctx.nama,
+                            match_value=match_value,
+                            note=success_note,
+                            screenshot="",
+                        )
+                    )
             except Exception as exc:  # noqa: BLE001
                 shot = await _log_screenshot(new_page, f"exception_submit_{ctx.display_index}", config)
                 note = note_with_reason(f"EXCEPTION: {describe_exception(exc)}", shot)
-                logbook.append(LogEvent(timestamp(), ctx.display_index, "ERROR", "SUBMIT", note, shot.path or ""))
+                logbook.append(
+                    LogEvent(
+                        ts=timestamp(),
+                        row_index=ctx.display_index,
+                        level="ERROR",
+                        stage="SUBMIT",
+                        idsbr=ctx.idsbr,
+                        nama=ctx.nama,
+                        match_value=match_value,
+                        note=note,
+                        screenshot=shot.path or "",
+                    )
+                )
                 error_rows += 1
                 if options.stop_on_error:
                     try:
@@ -576,11 +497,56 @@ async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> N
 
             await page.bring_to_front()
             await page.wait_for_timeout(800)
-            logbook.append(LogEvent(timestamp(), ctx.display_index, "OK", "ROW_DONE", "Baris selesai diproses"))
+            logbook.append(
+                LogEvent(
+                    ts=timestamp(),
+                    row_index=ctx.display_index,
+                    level="OK",
+                    stage="ROW_DONE",
+                    idsbr=ctx.idsbr,
+                    nama=ctx.nama,
+                    match_value=match_value,
+                    note="Baris selesai diproses",
+                    screenshot="",
+                )
+            )
             ok_rows += 1
 
     logbook.save()
-    print(
-        f"\nSelesai. Baris sukses: {ok_rows} | Baris bermasalah: {error_rows} | Baris dilewati: {skipped_rows}. "
-        f"Log tersimpan di: {logbook.path}"
+    index_path = logbook.path.parent.parent / "index.csv"
+    update_run_index(
+        index_path,
+        {
+            "run_id": config.run_id,
+            "started_at": config.run_started_at,
+            "command": "autofill",
+            "resume": str(options.resume),
+            "dry_run": str(options.dry_run),
+            "skip_status": str(config.skip_status),
+            "ok_rows": str(ok_rows),
+            "error_rows": str(error_rows),
+            "skipped_rows": str(skipped_rows),
+            "log_csv": str(logbook.path),
+            "log_html": str(logbook.report_path or ""),
+            "profile": config.profile_path or "",
+        },
     )
+    _print_run_summary(
+        ok_rows,
+        error_rows,
+        skipped_rows,
+        logbook,
+        config,
+        dry_run=options.dry_run,
+    )
+
+    issues = logbook.recent_issues()
+    if issues:
+        print("\nCatatan penting:")
+        for issue in issues:
+            note = issue.note.strip()
+            if len(note) > 140:
+                note = f"{note[:137]}..."
+            print(
+                f" - Baris {issue.row_index} [{issue.level}/{issue.stage}]: {note}"
+            )

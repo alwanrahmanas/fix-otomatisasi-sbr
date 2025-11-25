@@ -3,6 +3,8 @@ from __future__ import annotations
 import asyncio
 from contextlib import asynccontextmanager
 from typing import AsyncIterator, Optional
+from urllib.error import URLError
+from urllib.request import urlopen
 
 from playwright.async_api import (
     Browser,
@@ -49,6 +51,37 @@ async def ensure_click(
                 pass
             await asyncio.sleep(0.15)
     return False
+
+
+def ensure_cdp_ready(config: RuntimeConfig) -> None:
+    endpoint = config.cdp_endpoint.rstrip("/")
+    test_url = f"{endpoint}/json/version"
+    timeout_seconds = max(config.max_wait_ms, 2000) / 1000
+
+    try:
+        with urlopen(test_url, timeout=timeout_seconds) as response:
+            status = getattr(response, "status", 200)
+            if status >= 400:
+                raise RuntimeError(
+                    f"Chrome CDP merespons status {status} untuk {test_url}. "
+                    "Periksa apakah remote debugging telah diaktifkan."
+                )
+            payload = response.read()
+    except URLError as exc:
+        raise RuntimeError(
+            f"Gagal menghubungi Chrome CDP di {test_url}. "
+            "Pastikan Chrome dijalankan dengan remote debugging, misalnya:\n"
+            r'  & "C:\Program Files\Google\Chrome\Application\chrome.exe" '
+            r'--remote-debugging-port=9222 --user-data-dir="C:\ChromeProfileSBR"'
+        ) from exc
+    except Exception as exc:  # noqa: BLE001
+        raise RuntimeError(f"Gagal memverifikasi Chrome CDP: {exc}") from exc
+
+    if b"webSocketDebuggerUrl" not in payload:
+        raise RuntimeError(
+            f"Endpoint {test_url} merespons, tetapi tidak ditemukan `webSocketDebuggerUrl`. "
+            "Pastikan versi Chrome mendukung CDP dan remote debugging aktif."
+        )
 
 
 def _pick_context(browser: Browser) -> BrowserContext:

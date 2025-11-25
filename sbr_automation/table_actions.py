@@ -12,6 +12,7 @@ from playwright.async_api import (
 )
 
 from .playwright_helpers import ensure_click
+from .utils import with_retry
 
 
 TABLE_SELECTOR = "#table_direktori_usaha"
@@ -205,7 +206,7 @@ def _text_variants(raw_text: str) -> list[str]:
     return ordered
 
 
-async def click_edit_by_index(page: Page, index0: int, *, timeout: int) -> bool:
+async def click_edit_by_index(page: Page, index0: int, *, timeout: int, perform_click: bool = True) -> bool:
     table = page.locator(TABLE_SELECTOR)
     await table.wait_for(state="visible", timeout=timeout)
     await _wait_table_idle(page, timeout)
@@ -217,17 +218,35 @@ async def click_edit_by_index(page: Page, index0: int, *, timeout: int) -> bool:
     row = rows.nth(index0)
     btn = row.locator("css=td >> div.d-flex.align-items-center.col-actions >> a.btn-edit-perusahaan").first
     if await btn.count() == 0:
-        btn = row.locator(f"xpath=//*[@id='table_direktori_usaha']/tbody/tr[{index0+1}]/td[10]/div/a[1]")
+        fallback = row.locator(f"xpath=//*[@id='table_direktori_usaha']/tbody/tr[{index0+1}]/td[10]/div/a[1]")
+        if await fallback.count() == 0:
+            return False
+        if not perform_click:
+            return True
+        return await ensure_click(fallback, name="Edit row (fallback)", timeout=timeout)
 
-    return await ensure_click(btn, name="Edit row", timeout=timeout)
+    if not perform_click:
+        return True
+
+    async def _click():
+        ok = await ensure_click(btn, name="Edit row", timeout=timeout)
+        if not ok:
+            raise RuntimeError("click edit gagal")
+        return True
+
+    try:
+        await with_retry(_click, attempts=3, delay_ms=180, backoff=1.5)
+        return True
+    except Exception:
+        return False
 
 
-async def click_edit_by_text(page: Page, text: str, *, timeout: int) -> bool:
+async def click_edit_by_text(page: Page, text: str, *, timeout: int, perform_click: bool = True) -> bool:
     text = text.strip()
     if not text:
         return False
 
-    print(f"  > Mencari baris dengan teks: {text}")
+    print(f"    [Cari] Target baris: {text}")
 
     table = page.locator(TABLE_SELECTOR)
     await table.wait_for(state="visible", timeout=timeout)
@@ -260,22 +279,48 @@ async def click_edit_by_text(page: Page, text: str, *, timeout: int) -> bool:
         btn = row.locator("css=td >> div.d-flex.align-items-center.col-actions >> a.btn-edit-perusahaan").first
         if await btn.count() > 0:
             print("    [Klik] Tombol edit ditemukan (primary selector).")
-            result = await ensure_click(btn, name="Edit by text", timeout=timeout)
+            if perform_click:
+                async def _click():
+                    ok = await ensure_click(btn, name="Edit by text", timeout=timeout)
+                    if not ok:
+                        raise RuntimeError("click edit gagal")
+                    return True
+
+                try:
+                    await with_retry(_click, attempts=3, delay_ms=180, backoff=1.5)
+                    if used_filter:
+                        await _apply_table_search(page, "", timeout)
+                    return True
+                except Exception:
+                    if used_filter:
+                        await _apply_table_search(page, "", timeout)
+                    continue
             if used_filter:
                 await _apply_table_search(page, "", timeout)
-            if result:
-                return True
-            continue
+            return True
 
         fallback = row.locator("xpath=.//td[div[contains(@class,'col-actions')]]//a[1]")
         if await fallback.count() > 0:
             print("    [Klik] Tombol edit ditemukan (fallback selector).")
-            result = await ensure_click(fallback, name="Edit by text (fallback)", timeout=timeout)
+            if perform_click:
+                async def _click():
+                    ok = await ensure_click(fallback, name="Edit by text (fallback)", timeout=timeout)
+                    if not ok:
+                        raise RuntimeError("click edit gagal")
+                    return True
+
+                try:
+                    await with_retry(_click, attempts=3, delay_ms=180, backoff=1.5)
+                    if used_filter:
+                        await _apply_table_search(page, "", timeout)
+                    return True
+                except Exception:
+                    if used_filter:
+                        await _apply_table_search(page, "", timeout)
+                    continue
             if used_filter:
                 await _apply_table_search(page, "", timeout)
-            if result:
-                return True
-            continue
+            return True
 
         print("    [Klik] Tombol edit tidak tersedia pada baris yang ditemukan.")
 
