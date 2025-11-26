@@ -370,21 +370,36 @@ async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> N
                 skipped = int(fill_summary.get("skipped", 0))
                 errors = fill_summary.get("errors", [])
                 note_fill = f"Form terisi (update={updated}, skip={skipped})"
+                level = "OK"
+                screenshot_path = ""
                 if errors:
+                    level = "ERROR"
                     note_fill += f" | Kendala: {', '.join(errors)}"
+                    shot = await _log_screenshot(new_page, f"fill_errors_{ctx.display_index}", config)
+                    screenshot_path = shot.path or ""
                 logbook.append(
                     LogEvent(
                         ts=timestamp(),
                         row_index=ctx.display_index,
-                        level="OK",
+                        level=level,
                         stage="FILL",
                         idsbr=ctx.idsbr,
                         nama=ctx.nama,
                         match_value=match_value,
                         note=note_fill,
-                        screenshot="",
+                        screenshot=screenshot_path,
                     )
                 )
+                if errors:
+                    error_rows += 1
+                    try:
+                        await new_page.close()
+                    except PlaywrightError:
+                        pass
+                    await page.bring_to_front()
+                    if options.stop_on_error:
+                        break
+                    continue
             except Exception as exc:  # noqa: BLE001
                 shot = await _log_screenshot(new_page, f"exception_fill_form_{ctx.display_index}", config)
                 note = note_with_reason(f"Exception isi form: {describe_exception(exc)}", shot)

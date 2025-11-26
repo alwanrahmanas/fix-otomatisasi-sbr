@@ -16,9 +16,10 @@ DEFAULT_PROFILE_FIELD_SELECTORS: Dict[str, str] = {
     ),
     "alamat_pembetulan": (
         "textarea#alamat_pembetulan, textarea[name='alamat_pembetulan'], "
-        "input#alamat_pembetulan, input[name='alamat_pembetulan']"
+        "input#alamat_pembetulan, input[name='alamat_pembetulan'], "
+        "input#alamat_usaha, input[name='alamat'], input#alamat"
     ),
-    "nama_sls": "input#nama_sls, input[name='nama_sls']",
+    "nama_sls": "input#nama_sls, input[name='nama_sls'], input#sls, input[name='sls']",
     "kodepos": "input#kodepos, input[name='kodepos'], input[name='kode_pos']",
     "nomor_telepon": (
         "input#nomor_telepon, input[name='nomor_telepon'], input[name='telepon'], "
