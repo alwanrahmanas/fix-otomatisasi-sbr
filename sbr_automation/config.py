@@ -18,6 +18,7 @@ ARTIFACTS_DIR = ensure_directory(BASE_DIR / "artifacts")
 DEFAULT_SCREENSHOT_DIR = ensure_directory(ARTIFACTS_DIR / "screenshots")
 DEFAULT_CANCEL_SCREENSHOT_DIR = ensure_directory(ARTIFACTS_DIR / "screenshots_cancel")
 DEFAULT_LOG_DIR = ensure_directory(ARTIFACTS_DIR / "logs")
+DEFAULT_ATTENTION_FLAG = ARTIFACTS_DIR / "chromium_attention.flag"
 
 DEFAULT_STATUS_ID_MAP: Dict[str, str] = {
     "Aktif": "kondisi_aktif",
@@ -58,6 +59,7 @@ class RuntimeConfig:
     run_started_at: str = ""
     keep_runs: int = DEFAULT_KEEP_RUNS
     profile_path: Optional[str] = None
+    attention_flag: Optional[Path] = DEFAULT_ATTENTION_FLAG
 
 
 @dataclass(slots=True)

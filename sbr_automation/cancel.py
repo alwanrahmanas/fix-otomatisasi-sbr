@@ -10,7 +10,15 @@ from .excel_loader import ensure_required_columns, load_dataframe, slice_rows
 from .logbook import LogBook, LogEvent, update_run_index
 from .playwright_helpers import attach_browser, ensure_cdp_ready, pick_active_page
 from .table_actions import click_edit_by_index, click_edit_by_text
-from .utils import ScreenshotResult, describe_exception, note_with_reason, norm_space, take_screenshot, timestamp
+from .utils import (
+    ScreenshotResult,
+    clear_attention_flag,
+    describe_exception,
+    note_with_reason,
+    norm_space,
+    take_screenshot,
+    timestamp,
+)
 
 
 BASE_REQUIRED_COLUMNS_CANCEL = ()
@@ -112,6 +120,7 @@ async def _do_cancel(new_page: Page, config: RuntimeConfig) -> str:
 
 
 async def process_cancel(options: CancelOptions, config: RuntimeConfig) -> None:
+    clear_attention_flag(getattr(config, "attention_flag", None))
     df = load_dataframe(options.excel)
     required_columns = tuple(BASE_REQUIRED_COLUMNS_CANCEL) + MATCH_BY_REQUIRED_COLUMNS_CANCEL.get(
         options.match_by, ()
@@ -131,7 +140,11 @@ async def process_cancel(options: CancelOptions, config: RuntimeConfig) -> None:
     start_idx, end_idx = slice_rows(df, options.start_row, options.end_row)
     log_filename = f"log_sbr_cancel_{config.run_id}.csv" if config.run_id else "log_sbr_cancel.csv"
     log_path = config.log_dir / log_filename
-    logbook = LogBook(log_path, report_path=config.log_dir / log_filename.replace(".csv", ".html"))
+    logbook = LogBook(
+        log_path,
+        report_path=config.log_dir / log_filename.replace(".csv", ".html"),
+        attention_flag=getattr(config, "attention_flag", None),
+    )
 
     print("Memeriksa koneksi Chrome (CDP)...")
     try:

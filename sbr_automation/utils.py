@@ -54,6 +54,27 @@ def ensure_directory(path: Path) -> Path:
     return path
 
 
+def clear_attention_flag(flag_path: Path | None) -> None:
+    """Hapus file penanda agar tidak ada flag basi yang tersisa."""
+    if not flag_path:
+        return
+    try:
+        flag_path.unlink(missing_ok=True)
+    except Exception:
+        pass
+
+
+def signal_attention(flag_path: Path | None) -> None:
+    """Buat file penanda untuk memicu AHK/skrip lain menampilkan jendela."""
+    if not flag_path:
+        return
+    try:
+        flag_path.parent.mkdir(parents=True, exist_ok=True)
+        flag_path.touch(exist_ok=True)
+    except Exception:
+        pass
+
+
 @dataclass(slots=True)
 class ScreenshotResult:
     path: Optional[Path]

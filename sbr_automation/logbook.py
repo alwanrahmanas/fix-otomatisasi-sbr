@@ -10,6 +10,8 @@ from typing import Iterable, Literal, Optional
 
 import pandas as pd
 
+from .utils import signal_attention
+
 Level = Literal["OK", "WARN", "ERROR"]
 
 
@@ -30,13 +32,17 @@ class LogEvent:
 class LogBook:
     path: Path
     report_path: Optional[Path] = None
+    attention_flag: Optional[Path] = None
     _events: list[LogEvent] = field(default_factory=list)
 
     def append(self, event: LogEvent) -> None:
         self._events.append(event)
+        if event.level == "ERROR":
+            signal_attention(self.attention_flag)
 
     def extend(self, events: Iterable[LogEvent]) -> None:
-        self._events.extend(events)
+        for event in events:
+            self.append(event)
 
     def recent_issues(self, *, limit: int = 3, levels: tuple[Level, ...] = ("ERROR", "WARN")) -> list[LogEvent]:
         priority = {"ERROR": 0, "WARN": 1, "OK": 2}

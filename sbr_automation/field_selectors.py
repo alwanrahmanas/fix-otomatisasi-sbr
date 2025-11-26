@@ -12,7 +12,9 @@ DEFAULT_PROFILE_FIELD_SELECTORS: Dict[str, str] = {
     ),
     "nama_komersial_usaha": (
         "input#nama_komersial_usaha, input[name='nama_komersial_usaha'], "
-        "input#nama_komersial, input[name='nama_komersial']"
+        "input#nama_komersial, input[name='nama_komersial'], "
+        "input#nama-komersial, input[name='namaKomersial'], "
+        "input[placeholder*='Nama Komersial']"
     ),
     "alamat_pembetulan": (
         "textarea#alamat_pembetulan, textarea[name='alamat_pembetulan'], "

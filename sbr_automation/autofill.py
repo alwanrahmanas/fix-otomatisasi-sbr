@@ -18,6 +18,7 @@ from .submitter import is_finalized_form, is_locked_page, submit_form
 from .table_actions import click_edit_by_index, click_edit_by_text
 from .utils import (
     ScreenshotResult,
+    clear_attention_flag,
     describe_exception,
     note_with_reason,
     take_screenshot,
@@ -102,6 +103,7 @@ async def _log_screenshot(
 
 
 async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> None:
+    clear_attention_flag(getattr(config, "attention_flag", None))
     contexts, start_display, end_display = load_rows(options, config)
 
     resume_entries: Dict[int, dict] = {}
@@ -122,7 +124,11 @@ async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> N
         print("Mode dry-run aktif: tombol Edit hanya diverifikasi, form tidak dibuka.")
 
     report_filename = log_filename.replace(".csv", ".html")
-    logbook = LogBook(log_path, report_path=config.log_dir / report_filename)
+    logbook = LogBook(
+        log_path,
+        report_path=config.log_dir / report_filename,
+        attention_flag=getattr(config, "attention_flag", None),
+    )
 
     print("Memeriksa koneksi Chrome (CDP)...")
     try:
@@ -141,6 +147,7 @@ async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> N
         page = pick_active_page(context)
 
         for ctx in contexts:
+            page_ids_before_click = {id(p) for p in context.pages}
             if options.resume and ctx.display_index in resume_entries:
                 prev = resume_entries.pop(ctx.display_index)
                 prev_level = prev.get("level", "OK")
@@ -272,6 +279,20 @@ async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> N
                 fallback_text=match_value or ctx.idsbr or ctx.nama,
                 config=config,
             )
+
+            # Tutup tab ekstra jika klik Edit sempat terpanggil lebih dari sekali
+            try:
+                extra_pages = [
+                    p for p in context.pages if id(p) not in page_ids_before_click and p is not new_page
+                ]
+                for extra in extra_pages:
+                    try:
+                        await extra.close()
+                        print("    [Info] Menutup tab ekstra hasil klik ganda.")
+                    except PlaywrightError:
+                        pass
+            except Exception:
+                pass
 
             if not new_page:
                 shot = await _log_screenshot(page, f"no_new_tab_{ctx.display_index}", config)

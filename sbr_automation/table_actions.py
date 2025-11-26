@@ -12,7 +12,6 @@ from playwright.async_api import (
 )
 
 from .playwright_helpers import ensure_click
-from .utils import with_retry
 
 
 TABLE_SELECTOR = "#table_direktori_usaha"
@@ -223,22 +222,13 @@ async def click_edit_by_index(page: Page, index0: int, *, timeout: int, perform_
             return False
         if not perform_click:
             return True
-        return await ensure_click(fallback, name="Edit row (fallback)", timeout=timeout)
+        return await ensure_click(fallback, name="Edit row (fallback)", timeout=timeout, attempts=1)
 
     if not perform_click:
         return True
 
-    async def _click():
-        ok = await ensure_click(btn, name="Edit row", timeout=timeout)
-        if not ok:
-            raise RuntimeError("click edit gagal")
-        return True
-
-    try:
-        await with_retry(_click, attempts=3, delay_ms=180, backoff=1.5)
-        return True
-    except Exception:
-        return False
+    ok = await ensure_click(btn, name="Edit row", timeout=timeout, attempts=1)
+    return bool(ok)
 
 
 async def click_edit_by_text(page: Page, text: str, *, timeout: int, perform_click: bool = True) -> bool:
@@ -280,21 +270,12 @@ async def click_edit_by_text(page: Page, text: str, *, timeout: int, perform_cli
         if await btn.count() > 0:
             print("    [Klik] Tombol edit ditemukan (primary selector).")
             if perform_click:
-                async def _click():
-                    ok = await ensure_click(btn, name="Edit by text", timeout=timeout)
-                    if not ok:
-                        raise RuntimeError("click edit gagal")
+                ok = await ensure_click(btn, name="Edit by text", timeout=timeout, attempts=1)
+                if used_filter:
+                    await _apply_table_search(page, "", timeout)
+                if ok:
                     return True
-
-                try:
-                    await with_retry(_click, attempts=3, delay_ms=180, backoff=1.5)
-                    if used_filter:
-                        await _apply_table_search(page, "", timeout)
-                    return True
-                except Exception:
-                    if used_filter:
-                        await _apply_table_search(page, "", timeout)
-                    continue
+                continue
             if used_filter:
                 await _apply_table_search(page, "", timeout)
             return True
@@ -303,21 +284,12 @@ async def click_edit_by_text(page: Page, text: str, *, timeout: int, perform_cli
         if await fallback.count() > 0:
             print("    [Klik] Tombol edit ditemukan (fallback selector).")
             if perform_click:
-                async def _click():
-                    ok = await ensure_click(fallback, name="Edit by text (fallback)", timeout=timeout)
-                    if not ok:
-                        raise RuntimeError("click edit gagal")
+                ok = await ensure_click(fallback, name="Edit by text (fallback)", timeout=timeout, attempts=1)
+                if used_filter:
+                    await _apply_table_search(page, "", timeout)
+                if ok:
                     return True
-
-                try:
-                    await with_retry(_click, attempts=3, delay_ms=180, backoff=1.5)
-                    if used_filter:
-                        await _apply_table_search(page, "", timeout)
-                    return True
-                except Exception:
-                    if used_filter:
-                        await _apply_table_search(page, "", timeout)
-                    continue
+                continue
             if used_filter:
                 await _apply_table_search(page, "", timeout)
             return True
