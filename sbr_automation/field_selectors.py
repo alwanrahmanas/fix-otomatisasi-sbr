@@ -10,12 +10,24 @@ DEFAULT_PROFILE_FIELD_SELECTORS: Dict[str, str] = {
         "input#nama_usaha_pembetulan, input[name='nama_usaha_pembetulan'], "
         "input#nama_usaha, input[name='namaUsaha'], input[name='nama_usaha']"
     ),
+    "nama_komersial_usaha": (
+        "input#nama_komersial_usaha, input[name='nama_komersial_usaha'], "
+        "input#nama_komersial, input[name='nama_komersial']"
+    ),
+    "alamat_pembetulan": (
+        "textarea#alamat_pembetulan, textarea[name='alamat_pembetulan'], "
+        "input#alamat_pembetulan, input[name='alamat_pembetulan']"
+    ),
     "nama_sls": "input#nama_sls, input[name='nama_sls']",
     "kodepos": "input#kodepos, input[name='kodepos'], input[name='kode_pos']",
     "nomor_telepon": (
         "input#nomor_telepon, input[name='nomor_telepon'], input[name='telepon'], "
         "input[name='no_telp'], input[name='no_telp_usaha']"
     ),
+    "nomor_whatsapp": (
+        "input#whatsapp, input[name='whatsapp'], input[name='nomor_whatsapp'], input[name='no_whatsapp']"
+    ),
+    "website": "input#website, input[name='website']",
     "keberadaan_usaha": (
         "input#keberadaan_usaha, select#keberadaan_usaha, "
         "input[name='keberadaan_usaha'], select[name='keberadaan_usaha']"

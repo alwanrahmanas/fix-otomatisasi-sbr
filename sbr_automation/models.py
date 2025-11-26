@@ -11,7 +11,9 @@ class RowContext:
     nama: str
     status: str
     phone: str
+    whatsapp: str
     email: str
+    website: str
     latitude: str
     longitude: str
     sumber: str

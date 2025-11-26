@@ -19,13 +19,17 @@ REQUIRED_COLUMN_ALIASES: dict[str, tuple[str, ...]] = {
 COLUMN_ALIASES: dict[str, tuple[str, ...]] = {
     **REQUIRED_COLUMN_ALIASES,
     "idsbr": ("idsbr", "idsbr_master"),
-    "nama": ("nama", "nama_usaha", "nama_usaha_pembetulan"),
+    "nama": ("nama", "nama_usaha", "nama_usaha_pembetulan", "nama_komersial_usaha"),
 }
 PROFILE_FIELD_KEYS = (
     "nama_usaha_pembetulan",
+    "nama_komersial_usaha",
+    "alamat_pembetulan",
     "nama_sls",
     "kodepos",
     "nomor_telepon",
+    "nomor_whatsapp",
+    "website",
     "keberadaan_usaha",
     "idsbr_master",
     "kdprov_pindah",

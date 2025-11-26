@@ -174,6 +174,65 @@ async def _fill_phone(page: Page, phone: str) -> None:
         _form_log(f"Pengisian nomor telepon bermasalah: {describe_exception(exc)}")
 
 
+async def _fill_whatsapp(page: Page, whatsapp: str) -> None:
+    def _normalize_wa(raw: str) -> tuple[str, str]:
+        """Return (+62-prefixed, subscriber-only)."""
+        digits = re.findall(r"\d", raw or "")
+        if not digits:
+            return "", ""
+        if digits[:2] == ["6", "2"]:
+            digits = digits[2:]
+        elif digits[:1] == ["0"]:
+            digits = digits[1:]
+        subscriber = "".join(digits)
+        formatted = f"+62-{subscriber}" if subscriber else ""
+        return formatted, subscriber
+
+    try:
+        wa_input = (
+            page.get_by_placeholder(re.compile(r"Whatsapp", re.I))
+            .or_(page.locator("input#whatsapp, input[name='whatsapp'], input[name='nomor_whatsapp'], input[name='no_whatsapp']"))
+        ).first
+        await wa_input.wait_for(state="visible", timeout=1500)
+        if nonempty(whatsapp):
+            formatted, subscriber = _normalize_wa(whatsapp)
+            if not formatted:
+                _form_log("Nomor WhatsApp kosong setelah normalisasi; dilewati.")
+                return
+            try:
+                existing = (await wa_input.input_value()) or ""
+            except Exception:
+                existing = ""
+            fill_value = formatted
+            # Jika input sudah menyediakan prefix +62- tetap, isi hanya nomor sisanya.
+            if existing.strip().startswith("+62-"):
+                fill_value = subscriber
+            await wa_input.fill("")
+            await wa_input.fill(fill_value)
+            _form_log(f"Nomor WhatsApp diisi: {formatted}")
+        else:
+            _form_log("Nomor WhatsApp dilewati (Excel kosong).")
+    except Exception as exc:  # noqa: BLE001
+        _form_log(f"Pengisian nomor WhatsApp bermasalah: {describe_exception(exc)}")
+
+
+async def _fill_website(page: Page, website: str) -> None:
+    try:
+        web_input = (
+            page.get_by_placeholder(re.compile(r"Website", re.I))
+            .or_(page.locator("input#website, input[name='website']"))
+        ).first
+        await web_input.wait_for(state="visible", timeout=1500)
+        if nonempty(website):
+            await web_input.fill("")
+            await web_input.fill(website)
+            _form_log(f"Website diisi: {website}")
+        else:
+            _form_log("Website dilewati (Excel kosong).")
+    except Exception as exc:  # noqa: BLE001
+        _form_log(f"Pengisian website bermasalah: {describe_exception(exc)}")
+
+
 async def _fill_email(page: Page, ctx: RowContext) -> None:
     try:
         cb_email = page.locator("#check-email").first
@@ -268,6 +327,8 @@ async def _fill_coordinates(page: Page, ctx: RowContext) -> None:
 async def _fill_identitas_section(page: Page, ctx: RowContext) -> None:
     await _focus_identitas_section(page)
     await _fill_phone(page, ctx.phone)
+    await _fill_whatsapp(page, ctx.whatsapp)
+    await _fill_website(page, ctx.website)
     await _fill_email(page, ctx)
     await _fill_coordinates(page, ctx)
 
@@ -445,7 +506,7 @@ async def _fill_profile_payload_fields(page: Page, ctx: RowContext, config: Runt
     select2_selectors: Dict[str, str] = config.select2_field_selectors
 
     for key in PROFILE_FIELD_KEYS:
-        if key in {"nomor_telepon", "sumber_profiling", "catatan_profiling"}:
+        if key in {"nomor_telepon", "nomor_whatsapp", "website", "sumber_profiling", "catatan_profiling"}:
             continue
         if key == "keberadaan_usaha":
             skipped += 1

@@ -13,11 +13,13 @@ Software CLI berbasis Playwright untuk membantu pengisian Profiling SBR di MATCH
 ## Daftar Isi
 
 - [Prasyarat](#prasyarat)
-- [Instalasi](#instalasi)
-- [Struktur Proyek](#struktur-proyek)
+- [Catatan Terminal](#catatan-terminal)
+- [Quickstart](#quickstart)
+- [Instalasi (Detail)](#instalasi-detail)
 - [Menyiapkan Data Profiling](#menyiapkan-data-profiling)
 - [Menjalankan Autofill](#menjalankan-autofill)
 - [Menjalankan Cancel Submit](#menjalankan-cancel-submit)
+- [Struktur Proyek](#struktur-proyek)
 - [Profil CLI](#profil-cli)
 - [Pemetaan Status](#pemetaan-status)
 - [Output dan Log](#output-dan-log)
@@ -35,7 +37,36 @@ Software CLI berbasis Playwright untuk membantu pengisian Profiling SBR di MATCH
 
 ---
 
-## Instalasi
+## Catatan Terminal
+
+- Semua contoh perintah di README menggunakan PowerShell. Jika Anda lebih nyaman dengan Command Prompt atau Git Bash/WSL, pilih salah satu dan sesuaikan perintah berikut.
+- **Command Prompt (cmd.exe):** aktivasi venv dengan `.venv\Scripts\activate.bat`; perintah `python ...` sama; jalankan Chrome dengan `"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\ChromeProfileSBR"` (tanpa prefix `&`).
+- **Git Bash/WSL/Linux/macOS:** aktivasi venv dengan `source .venv/bin/activate`; gunakan `python3 ...`; jalankan Chrome dengan `google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-sbr` atau sesuaikan lokasi binary dan profil.
+- Pada PowerShell, gunakan prefix `&` jika path berisi spasi (contoh Chrome). Di shell lain tidak diperlukan.
+
+---
+
+## Quickstart
+
+Untuk langsung jalan (contoh PowerShell):
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\activate
+python -m pip install --upgrade pip
+pip install pandas openpyxl playwright
+playwright install chromium
+& "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\ChromeProfileSBR"
+python sbr_fill.py --match-by idsbr --start 1 --end 5
+```
+
+- Command Prompt: gunakan `.venv\Scripts\activate.bat` dan hilangkan prefix `&` saat memanggil Chrome.
+- Git Bash/WSL/Linux/macOS: gunakan `source .venv/bin/activate`, `python3`, dan perintah `google-chrome --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-sbr` atau sesuaikan path.
+- Pastikan Excel Profiling resmi sudah ada di folder kerja (bisa di `data/`).
+
+---
+
+## Instalasi (Detail)
 
 1. Clone repositori ini dan masuk ke foldernya:
 
@@ -54,6 +85,7 @@ Software CLI berbasis Playwright untuk membantu pengisian Profiling SBR di MATCH
    playwright install chromium
    ```
 
+   - Command Prompt: aktifkan venv dengan `.venv\Scripts\activate.bat`. Git Bash/WSL/Linux/macOS: `source .venv/bin/activate` dan `python3` bila diperlukan.
    - Jika perintah `python` mengarah ke versi lain, gunakan `py -3` atau `python3`.
    - `playwright install chromium` cukup dijalankan sekali untuk mengunduh browser otomatis.
 
@@ -66,43 +98,8 @@ Software CLI berbasis Playwright untuk membantu pengisian Profiling SBR di MATCH
    - Gunakan profil Chrome khusus agar loginnya terpisah dari Chrome harian.
    - Setelah Chrome terbuka, login ke [https://matchapro.web.bps.go.id/](https://matchapro.web.bps.go.id/) dan buka menu **Direktori Usaha**.
    - Saat skrip dijalankan, koneksi CDP (Chrome DevTools Protocol) diperiksa otomatis. Jika belum siap, pesan error menampilkan ulang perintah di atas.
+   - Command Prompt: hilangkan prefix `&`. Git Bash/WSL/Linux/macOS: gunakan path binary Chrome/Chromium yang sesuai (lihat Catatan Terminal).
 4. Simpan Excel Profiling (format resmi BPS) ke folder proyek, misalnya `data/Daftar Profiling.xlsx`.
-
----
-
-## Struktur Proyek
-
-```text
-.
-|-- artifacts/              # Arsip log dan screenshot per run
-|   |-- logs/
-|   |-- screenshots/
-|   `-- screenshots_cancel/
-|-- data/                   # Tempat menyimpan Excel Profiling (opsional)
-|-- config/                 # Profil CLI dan pemetaan status
-|-- sbr_automation/         # Modul Python otomatisasi (lihat rincian di bawah)
-|-- sbr_fill.py             # Perintah autofill
-`-- sbr_cancel.py           # Perintah cancel submit
-```
-
-- `sbr_fill.py` mengisi form Profiling sesuai Excel.
-- `sbr_cancel.py` membuka form dan menekan tombol _Cancel Submit_.
-- Semua log dan screenshot otomatis tersimpan di `artifacts/`.
-
-### Rincian folder `sbr_automation/`
-
-- `config.py`: pengaturan runtime (timeout, jeda slow mode, folder output), pemetaan status default, dan util untuk membuat folder run/log.
-- `loader.py`: baca & validasi Excel, normalisasi status/telepon, membentuk `RowContext` untuk setiap baris yang akan diproses.
-- `navigator.py`: logika membuka tab form setelah klik Edit, termasuk fallback pencarian href.
-- `table_actions.py`: helper interaksi tabel (filter, klik Edit by index/teks) dengan retry.
-- `form_filler.py`: isi field form (status, identitas, select2, IDSBR master) dengan selector yang dapat dikonfigurasi.
-- `submitter.py`: menangani tombol Submit Final/konfirmasi, deteksi form final/terkunci, dengan reason code.
-- `resume.py`: baca log sebelumnya untuk mode resume dan mencari log terbaru.
-- `playwright_helpers.py`: util dasar Playwright (attach ke Chrome CDP, slow pause, hilangkan overlay).
-- `logbook.py`: pencatatan log CSV/HTML dan indeks run.
-- `field_selectors.py`: default selector field + loader JSON override.
-- `utils.py`: fungsi umum (normalisasi, screenshot, retry `with_retry`).
-- `models.py`: definisi dataclass `RowContext` dan `SubmitResult`.
 
 ---
 
@@ -110,7 +107,7 @@ Software CLI berbasis Playwright untuk membantu pengisian Profiling SBR di MATCH
 
 - Gunakan Excel Profiling resmi. Nama kolom akan dibersihkan (lowercase, spasi menjadi `_`); jika header bertingkat, skrip otomatis mencoba baris kedua.
 - Kolom wajib untuk autofill: `status/keberadaan_usaha`, `email`, `sumber/sumber_profiling`, `catatan/catatan_profiling`, serta kolom pencocokan sesuai `--match-by` (`idsbr/idsbr_master` atau `nama/nama_usaha/nama_usaha_pembetulan`).
-- Kolom Profiling yang akan diisi bila tersedia (jika kosong/tidak ada akan dilewati): `nama_usaha_pembetulan`, `nama_sls`, `kodepos`, `nomor_telepon`, `idsbr_master`, `kdprov_pindah`, `kdkab_pindah`, `kdprov`, `kdkab`, `kdkec`, `kddesa`, `jenis_kepemilikan_usaha`, `bentuk_badan_hukum_usaha`, `sumber_profiling`, `catatan_profiling`, `latitude`, `longitude`.
+- Kolom Profiling yang akan diisi (kolom harus ada, nilai kosong akan dilewati): `nama_usaha_pembetulan`, `nama_komersial_usaha`, `alamat_pembetulan`, `nama_sls`, `kodepos`, `nomor_telepon`, `nomor_whatsapp`, `website`, `idsbr_master`, `kdprov_pindah`, `kdkab_pindah`, `kdprov`, `kdkab`, `kdkec`, `kddesa`, `jenis_kepemilikan_usaha`, `bentuk_badan_hukum_usaha`, `sumber_profiling`, `catatan_profiling`, `latitude`, `longitude`.
 - Khusus status **Duplikat**, isi `idsbr_master` (kode master) di Excel; skrip akan otomatis menekan tombol **Check** dan **Accept** setelah mengisi field tersebut.
 - Nilai status boleh berupa teks atau angka 1-11; pemetaan default mengikuti form MATCHAPRO (mis. 1=Aktif, 3=Belum Beroperasi/Berproduksi, 8=Aktif Nonrespon).
 - Kolom nomor telepon otomatis dibaca dari beberapa alias (`nomor_telepon`, `nomor_whatsapp`, `no telp`, `phone`, dll).
@@ -119,6 +116,8 @@ Software CLI berbasis Playwright untuk membantu pengisian Profiling SBR di MATCH
 ---
 
 ## Menjalankan Autofill
+
+Perintah contoh menggunakan PowerShell; sesuaikan ke Command Prompt atau Git Bash/WSL sesuai Catatan Terminal.
 
 Contoh dasar:
 
@@ -157,11 +156,11 @@ Daftar opsi bisa digunakan:
 
 | Opsi                                    | Fungsi                                                                                                                                                  |
 | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--profile config\profile.json`       | Memuat nilai default argumen dari file JSON (lihat[Profil CLI](#profil-cli)).                                                                              |
+| `--profile config\profile.json`         | Memuat nilai default argumen dari file JSON (lihat [Profil CLI](#profil-cli)).                                                                          |
 | `--excel "C:\path\file.xlsx"`         | Memilih Excel tertentu. Jika absen, skrip mencari satu-satunya `.xlsx` di folder kerja atau `data/`.                                                |
 | `--sheet 1`                           | Memilih sheet Excel ke- (`0` = sheet pertama).                                                                                                        |
-| `--cdp-endpoint`                      | Endpoint Chrome CDP (default[http://localhost:9222](http://localhost:9222)); ubah bila port atau host berbeda dari default.                                |
-| `--match-by idsbr`                    | Cara menemukan tombol**Edit** (`idsbr`, `name`, atau indeks tabel `index`).                                                                 |
+| `--cdp-endpoint`                      | Endpoint Chrome CDP (default [http://localhost:9222](http://localhost:9222)); ubah bila port atau host berbeda dari default.                                |
+| `--match-by idsbr`                    | Cara menemukan tombol **Edit** (`idsbr`, `name`, atau indeks tabel `index`).                                                                 |
 | `--start` / `--end`                 | Menentukan rentang baris yang diproses.                                                                                                                 |
 | `--stop-on-error`                     | Menghentikan proses pada error pertama. Tanpa opsi ini, skrip lanjut ke baris berikutnya.                                                               |
 | `--no-slow-mode`                      | Menghapus jeda antaraksi (gunakan setelah alur dipastikan stabil).                                                                                      |
@@ -210,6 +209,8 @@ ruff check .
 
 ## Menjalankan Cancel Submit
 
+Perintah contoh menggunakan PowerShell; sesuaikan ke Command Prompt atau Git Bash/WSL sesuai Catatan Terminal.
+
 Contoh perintah:
 
 ```powershell
@@ -222,6 +223,42 @@ python sbr_cancel.py --match-by name --start 1 --end 20
 - Riwayat ringkas run tersimpan di `artifacts/logs/index.csv`.
 - Pastikan Excel memuat kolom sesuai pilihan `--match-by` (`idsbr/idsbr_master` atau `nama/nama_usaha/nama_usaha_pembetulan`; mode `index` tidak butuh kolom tambahan).
 - Opsi yang sering dipakai untuk cancel: `--profile`, `--excel`, `--sheet`, `--match-by`, `--start`/`--end`, `--stop-on-error`, `--cdp-endpoint`, `--pause-after-edit`, `--max-wait`, `--run-id`, `--keep-runs`.
+
+---
+
+## Struktur Proyek
+
+```text
+.
+|-- artifacts/              # Arsip log dan screenshot per run
+|   |-- logs/
+|   |-- screenshots/
+|   `-- screenshots_cancel/
+|-- data/                   # Tempat menyimpan Excel Profiling (opsional)
+|-- config/                 # Profil CLI dan pemetaan status
+|-- sbr_automation/         # Modul Python otomatisasi (lihat rincian di bawah)
+|-- sbr_fill.py             # Perintah autofill
+`-- sbr_cancel.py           # Perintah cancel submit
+```
+
+- `sbr_fill.py` mengisi form Profiling sesuai Excel.
+- `sbr_cancel.py` membuka form dan menekan tombol _Cancel Submit_.
+- Semua log dan screenshot otomatis tersimpan di `artifacts/`.
+
+### Rincian folder `sbr_automation/`
+
+- `config.py`: pengaturan runtime (timeout, jeda slow mode, folder output), pemetaan status default, dan util untuk membuat folder run/log.
+- `loader.py`: baca & validasi Excel, normalisasi status/telepon, membentuk `RowContext` untuk setiap baris yang akan diproses.
+- `navigator.py`: logika membuka tab form setelah klik Edit, termasuk fallback pencarian href.
+- `table_actions.py`: helper interaksi tabel (filter, klik Edit by index/teks) dengan retry.
+- `form_filler.py`: isi field form (status, identitas, select2, IDSBR master) dengan selector yang dapat dikonfigurasi.
+- `submitter.py`: menangani tombol Submit Final/konfirmasi, deteksi form final/terkunci, dengan reason code.
+- `resume.py`: baca log sebelumnya untuk mode resume dan mencari log terbaru.
+- `playwright_helpers.py`: util dasar Playwright (attach ke Chrome CDP, slow pause, hilangkan overlay).
+- `logbook.py`: pencatatan log CSV/HTML dan indeks run.
+- `field_selectors.py`: default selector field + loader JSON override.
+- `utils.py`: fungsi umum (normalisasi, screenshot, retry `with_retry`).
+- `models.py`: definisi dataclass `RowContext` dan `SubmitResult`.
 
 ---
 

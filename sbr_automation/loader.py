@@ -18,12 +18,17 @@ from .utils import norm_float, norm_phone, norm_space
 PHONE_COLUMN_CANDIDATES = (
     "nomor_telepon",
     "Nomor Telepon",
-    "nomor_whatsapp",
     "No Telepon",
     "No. Telepon",
     "Telepon",
     "Telepon/HP",
     "Phone",
+)
+WHATSAPP_COLUMN_CANDIDATES = (
+    "nomor_whatsapp",
+    "whatsapp",
+    "no_whatsapp",
+    "no whatsapp",
 )
 
 STATUS_NORMALIZATION = {
@@ -63,6 +68,19 @@ def _select_phone_value(df_row) -> object:
     return df_row.get("Nomor Telepon")
 
 
+def _select_whatsapp_value(df_row) -> object:
+    columns = getattr(df_row, "index", ())
+    for column in WHATSAPP_COLUMN_CANDIDATES:
+        if column in columns:
+            value = df_row.get(column)
+            if norm_space(value):
+                return value
+    for column in WHATSAPP_COLUMN_CANDIDATES:
+        if column in columns:
+            return df_row.get(column)
+    return df_row.get("nomor_whatsapp") or df_row.get("whatsapp")
+
+
 def _normalize_status(status: str) -> str:
     if not status:
         return ""
@@ -85,10 +103,13 @@ def _context_from_row(df_row, table_index: int, display_index: int) -> RowContex
             df_row.get("nama")
             or df_row.get("nama_usaha")
             or df_row.get("nama_usaha_pembetulan")
+            or df_row.get("nama_komersial_usaha")
         ),
         status=_normalize_status(norm_space(df_row.get("status") or df_row.get("keberadaan_usaha"))),
         phone=norm_phone(_select_phone_value(df_row)),
+        whatsapp=norm_phone(_select_whatsapp_value(df_row)),
         email=norm_space(df_row.get("email")),
+        website=norm_space(df_row.get("website")),
         latitude=norm_float(df_row.get("latitude")),
         longitude=norm_float(df_row.get("longitude")),
         sumber=sumber,
