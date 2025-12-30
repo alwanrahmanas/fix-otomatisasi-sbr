@@ -1,0 +1,6 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251210_103902,40,OK,OPEN_TAB,12620763,"""PENCUCIAN MOBIL MOTOR, RIZQ DOSMERING <ASWAN,S.Pi>""",12620763,Tab form baru terdeteksi (event page).,
+20251210_103903,40,OK,FINAL_SKIP,12620763,"""PENCUCIAN MOBIL MOTOR, RIZQ DOSMERING <ASWAN,S.Pi>""",12620763,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251210_103912,41,OK,OPEN_TAB,12855429,INDUSTRI KUE BASAH <ROSNI> <ROSNI>,12855429,Tab form baru terdeteksi (event page).,
+20251210_103930,41,OK,FILL,12855429,INDUSTRI KUE BASAH <ROSNI> <ROSNI>,12855429,"Form terisi (update=8, skip=9)",
+20251210_103933,41,ERROR,SUBMIT,12855429,INDUSTRI KUE BASAH <ROSNI> <ROSNI>,12855429,"ERROR_FILL | CODE:SUBMIT_ERROR_FILL Form menolak submit karena ada isian yang perlu diperbaiki. | Pesan: Masih terdapat isian yang harus diperbaiki! | Petunjuk: Pemberitahuan, Masih terdapat isian yang harus diperbaiki!, *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-10\20251210_103932_submit_issue_41_ERROR_FILL.png

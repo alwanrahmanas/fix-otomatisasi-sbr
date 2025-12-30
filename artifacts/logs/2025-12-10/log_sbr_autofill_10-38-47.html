@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <title>Laporan SBR Automation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; background: #f8f9fa; color: #212529; }
+        h1, h2 { color: #0b7285; }
+        .summary { background: #e3fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        table { border-collapse: collapse; width: 100%; background: #fff; }
+        th, td { border: 1px solid #dee2e6; padding: 0.5rem; text-align: left; font-size: 0.95rem; }
+        th { background: #0b7285; color: #fff; position: sticky; top: 0; }
+        tr:nth-child(even) { background: #f1f3f5; }
+        a { color: #0b7285; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Laporan Otomatisasi Profiling SBR</h1>
+    <p>Dibuat pada: 2025-12-10 10:39:33</p>
+    <div class="summary">
+        <h2>Ringkasan Level</h2>
+        <ul>
+            <li><strong>OK</strong>: 4</li><li><strong>ERROR</strong>: 1</li>
+        </ul>
+        <p>CSV sumber: <code>log_sbr_autofill_10-38-47.csv</code></p>
+    </div>
+    <h2>Detail Baris</h2>
+    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ts</th>
+      <th>row_index</th>
+      <th>level</th>
+      <th>stage</th>
+      <th>idsbr</th>
+      <th>nama</th>
+      <th>match_value</th>
+      <th>note</th>
+      <th>screenshot</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>20251210_103902</td>
+      <td>40</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>12620763</td>
+      <td>"PENCUCIAN MOBIL MOTOR, RIZQ DOSMERING <ASWAN,S.Pi>"</td>
+      <td>12620763</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_103903</td>
+      <td>40</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>12620763</td>
+      <td>"PENCUCIAN MOBIL MOTOR, RIZQ DOSMERING <ASWAN,S.Pi>"</td>
+      <td>12620763</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_103912</td>
+      <td>41</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>12855429</td>
+      <td>INDUSTRI KUE BASAH <ROSNI> <ROSNI></td>
+      <td>12855429</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_103930</td>
+      <td>41</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>12855429</td>
+      <td>INDUSTRI KUE BASAH <ROSNI> <ROSNI></td>
+      <td>12855429</td>
+      <td>Form terisi (update=8, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_103933</td>
+      <td>41</td>
+      <td>ERROR</td>
+      <td>SUBMIT</td>
+      <td>12855429</td>
+      <td>INDUSTRI KUE BASAH <ROSNI> <ROSNI></td>
+      <td>12855429</td>
+      <td>ERROR_FILL | CODE:SUBMIT_ERROR_FILL Form menolak submit karena ada isian yang perlu diperbaiki. | Pesan: Masih terdapat isian yang harus diperbaiki! | Petunjuk: Pemberitahuan, Masih terdapat isian yang harus diperbaiki!, *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!</td>
+      <td><a href="../../screenshots/2025-12-10/20251210_103932_submit_issue_41_ERROR_FILL.png">20251210_103932_submit_issue_41_ERROR_FILL.png</a></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

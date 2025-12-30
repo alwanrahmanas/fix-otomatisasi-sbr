@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <title>Laporan SBR Automation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; background: #f8f9fa; color: #212529; }
+        h1, h2 { color: #0b7285; }
+        .summary { background: #e3fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        table { border-collapse: collapse; width: 100%; background: #fff; }
+        th, td { border: 1px solid #dee2e6; padding: 0.5rem; text-align: left; font-size: 0.95rem; }
+        th { background: #0b7285; color: #fff; position: sticky; top: 0; }
+        tr:nth-child(even) { background: #f1f3f5; }
+        a { color: #0b7285; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Laporan Otomatisasi Profiling SBR</h1>
+    <p>Dibuat pada: 2025-12-10 16:05:08</p>
+    <div class="summary">
+        <h2>Ringkasan Level</h2>
+        <ul>
+            <li><strong>ERROR</strong>: 1</li>
+        </ul>
+        <p>CSV sumber: <code>log_sbr_autofill_16-04-55.csv</code></p>
+    </div>
+    <h2>Detail Baris</h2>
+    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ts</th>
+      <th>row_index</th>
+      <th>level</th>
+      <th>stage</th>
+      <th>idsbr</th>
+      <th>nama</th>
+      <th>match_value</th>
+      <th>note</th>
+      <th>screenshot</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>20251210_160508</td>
+      <td>71</td>
+      <td>ERROR</td>
+      <td>CLICK_EDIT</td>
+      <td>14560323</td>
+      <td>INDUSTRI PENGOLAHAN KOPRA <MUHAMAD ZAIN> <MUHAMAD ZAIN></td>
+      <td>14560323</td>
+      <td>CODE:CLICK_EDIT_EXCEPTION (target idsbr=14560323) : TimeoutError: Locator.wait_for: Timeout 6000ms exceeded.\nCall log:\n  - waiting for locator("#table_direktori_usaha") to be visible\n</td>
+      <td><a href="../../screenshots/2025-12-10/20251210_160508_exception_click_edit_71.png">20251210_160508_exception_click_edit_71.png</a></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

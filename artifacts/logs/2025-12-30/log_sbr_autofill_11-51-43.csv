@@ -1,0 +1,14 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251230_115227,1,ERROR,CLICK_EDIT,97516601,"KONTRAKTOR AZRIN ZABUR, CV",97516601,"CODE:CLICK_EDIT_EXCEPTION (target idsbr=97516601) : TimeoutError: Locator.wait_for: Timeout 6000ms exceeded.
+Call log:
+  - waiting for locator(""#table_direktori_usaha"") to be visible
+ (screenshot-error: Page.screenshot: Timeout 30000ms exceeded.
+Call log:
+  - taking page screenshot
+  - waiting for fonts to load...
+  - fonts loaded
+)",
+20251230_115235,2,ERROR,CLICK_EDIT,97516602,KOPERASI SERBA USAHA,97516602,"CODE:CLICK_EDIT_EXCEPTION (target idsbr=97516602) : TimeoutError: Locator.wait_for: Timeout 6000ms exceeded.
+Call log:
+  - waiting for locator(""#table_direktori_usaha"") to be visible
+",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-30\20251230_115233_exception_click_edit_2.png

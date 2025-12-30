@@ -1,0 +1,4 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251210_154432,70,OK,OPEN_TAB,12599551,PERDAGANGAN ECERAN SEMBAKO <YETIK> <YETIK MUNAWAROH>,12599551,Tab form baru terdeteksi (event page).,
+20251210_154432,70,OK,FINAL_SKIP,12599551,PERDAGANGAN ECERAN SEMBAKO <YETIK> <YETIK MUNAWAROH>,12599551,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251210_154444,71,ERROR,CLICK_EDIT,14603323,INDUSTRI PENGOLAHAN KOPRA <MUHAMAD ZAIN> <MUHAMAD ZAIN>,14603323,CODE:CLICK_EDIT_TIMEOUT Tombol Edit tidak ditemukan atau tidak bisa diklik (target idsbr=14603323),C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-10\20251210_154443_gagal_click_edit_71.png

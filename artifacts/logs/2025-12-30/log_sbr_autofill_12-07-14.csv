@@ -1,0 +1,14 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251230_120737,5,ERROR,CLICK_EDIT,97516614,SETIA KAWAN UD,97516614,"CODE:CLICK_EDIT_EXCEPTION (target idsbr=97516614) : TimeoutError: Locator.wait_for: Timeout 6000ms exceeded.
+Call log:
+  - waiting for locator(""#table_direktori_usaha"") to be visible
+",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-30\20251230_120727_exception_click_edit_5.png
+20251230_120813,6,ERROR,CLICK_EDIT,97516615,TRAVEL(ASDIN SATRIA),97516615,"CODE:CLICK_EDIT_EXCEPTION (target idsbr=97516615) : TimeoutError: Locator.wait_for: Timeout 6000ms exceeded.
+Call log:
+  - waiting for locator(""#table_direktori_usaha"") to be visible
+ (screenshot-error: Page.screenshot: Timeout 30000ms exceeded.
+Call log:
+  - taking page screenshot
+  - waiting for fonts to load...
+  - fonts loaded
+)",

@@ -1,0 +1,33 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251211_153656,1,OK,OPEN_TAB,97516601,"KONTRAKTOR AZRIN ZABUR, CV",97516601,Tab form baru terdeteksi (event page).,
+20251211_153730,1,OK,FILL,97516601,"KONTRAKTOR AZRIN ZABUR, CV",97516601,"Form terisi (update=10, skip=8)",
+20251211_153744,1,ERROR,SUBMIT,97516601,"KONTRAKTOR AZRIN ZABUR, CV",97516601,"NO_SUCCESS_SIGNAL | CODE:SUBMIT_NO_SUCCESS_SIGNAL Tidak ada sinyal sukses setelah konfirmasi submit. | Petunjuk: *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!, Kab/Kota terpilih tidak boleh sama dengan Kab/Kota asal., Minimal 1 kegiatan usaha dan kategori harus terisi",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_153742_submit_issue_1_NO_SUCCESS_SIGNAL.png
+20251211_153755,2,OK,OPEN_TAB,97516602,KOPERASI SERBA USAHA,97516602,Tab form baru terdeteksi (event page).,
+20251211_153821,2,OK,FILL,97516602,KOPERASI SERBA USAHA,97516602,"Form terisi (update=9, skip=9)",
+20251211_153830,2,OK,SUBMIT,97516602,KOPERASI SERBA USAHA,97516602,Submit final sukses,
+20251211_153831,2,OK,ROW_DONE,97516602,KOPERASI SERBA USAHA,97516602,Baris selesai diproses,
+20251211_153843,3,OK,OPEN_TAB,97516604,"AYUMI CIPTA SARANA, CV",97516604,Tab form baru terdeteksi (event page).,
+20251211_153913,3,OK,FILL,97516604,"AYUMI CIPTA SARANA, CV",97516604,"Form terisi (update=9, skip=9)",
+20251211_153921,3,OK,SUBMIT,97516604,"AYUMI CIPTA SARANA, CV",97516604,Submit final sukses,
+20251211_153922,3,OK,ROW_DONE,97516604,"AYUMI CIPTA SARANA, CV",97516604,Baris selesai diproses,
+20251211_153934,4,OK,OPEN_TAB,97516605,KOPERASI BERKAH SEJATI,97516605,Tab form baru terdeteksi (event page).,
+20251211_154001,4,OK,FILL,97516605,KOPERASI BERKAH SEJATI,97516605,"Form terisi (update=9, skip=9)",
+20251211_154010,4,OK,SUBMIT,97516605,KOPERASI BERKAH SEJATI,97516605,Submit final sukses,
+20251211_154011,4,OK,ROW_DONE,97516605,KOPERASI BERKAH SEJATI,97516605,Baris selesai diproses,
+20251211_154030,5,ERROR,OPEN_TAB,97516614,SETIA KAWAN UD,97516614,"Tidak ada tab form: TimeoutError: Timeout 6000ms exceeded while waiting for event ""page"" | URL tidak berubah",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_154029_no_new_tab_5.png
+20251211_154111,6,ERROR,OPEN_TAB,97516615,TRAVEL(ASDIN SATRIA),97516615,"Tidak ada tab form: TimeoutError: Timeout 6000ms exceeded while waiting for event ""page"" | URL tidak berubah",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_154109_no_new_tab_6.png
+20251211_154129,7,OK,OPEN_TAB,97516609,TOKO FURNITURE (SAKARIA),97516609,Tab form baru terdeteksi (event page).,
+20251211_154152,7,OK,FILL,97516609,TOKO FURNITURE (SAKARIA),97516609,"Form terisi (update=9, skip=9)",
+20251211_154159,7,OK,SUBMIT,97516609,TOKO FURNITURE (SAKARIA),97516609,Submit final sukses,
+20251211_154200,7,OK,ROW_DONE,97516609,TOKO FURNITURE (SAKARIA),97516609,Baris selesai diproses,
+20251211_154216,8,OK,OPEN_TAB,97516610,"ARWAN, UD",97516610,Tab form baru terdeteksi (event page).,
+20251211_154246,8,OK,FILL,97516610,"ARWAN, UD",97516610,"Form terisi (update=10, skip=8)",
+20251211_154257,8,ERROR,SUBMIT,97516610,"ARWAN, UD",97516610,"NO_SUCCESS_SIGNAL | CODE:SUBMIT_NO_SUCCESS_SIGNAL Tidak ada sinyal sukses setelah konfirmasi submit. | Petunjuk: *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!, Kab/Kota terpilih tidak boleh sama dengan Kab/Kota asal., Minimal 1 kegiatan usaha dan kategori harus terisi",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_154256_submit_issue_8_NO_SUCCESS_SIGNAL.png
+20251211_154307,9,OK,OPEN_TAB,97516606,KONSULTAN SURYA ABADI PT,97516606,Tab form baru terdeteksi (event page).,
+20251211_154331,9,OK,FILL,97516606,KONSULTAN SURYA ABADI PT,97516606,"Form terisi (update=9, skip=9)",
+20251211_154338,9,OK,SUBMIT,97516606,KONSULTAN SURYA ABADI PT,97516606,Submit final sukses,
+20251211_154339,9,OK,ROW_DONE,97516606,KONSULTAN SURYA ABADI PT,97516606,Baris selesai diproses,
+20251211_154349,10,OK,OPEN_TAB,97516607,KARAOKE KELUARGA (ACO),97516607,Tab form baru terdeteksi (event page).,
+20251211_154409,10,OK,FILL,97516607,KARAOKE KELUARGA (ACO),97516607,"Form terisi (update=9, skip=9)",
+20251211_154419,10,OK,SUBMIT,97516607,KARAOKE KELUARGA (ACO),97516607,Submit final sukses,
+20251211_154420,10,OK,ROW_DONE,97516607,KARAOKE KELUARGA (ACO),97516607,Baris selesai diproses,

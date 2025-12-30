@@ -1,0 +1,9 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251230_121013,3,ERROR,CLICK_EDIT,97516604,"AYUMI CIPTA SARANA, CV",97516604,"CODE:CLICK_EDIT_EXCEPTION (target idsbr=97516604) : TimeoutError: Locator.wait_for: Timeout 6000ms exceeded.
+Call log:
+  - waiting for locator(""#table_direktori_usaha"") to be visible
+",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-30\20251230_121012_exception_click_edit_3.png
+20251230_121023,4,ERROR,CLICK_EDIT,97516605,KOPERASI BERKAH SEJATI,97516605,"CODE:CLICK_EDIT_EXCEPTION (target idsbr=97516605) : TimeoutError: Locator.wait_for: Timeout 6000ms exceeded.
+Call log:
+  - waiting for locator(""#table_direktori_usaha"") to be visible
+",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-30\20251230_121019_exception_click_edit_4.png

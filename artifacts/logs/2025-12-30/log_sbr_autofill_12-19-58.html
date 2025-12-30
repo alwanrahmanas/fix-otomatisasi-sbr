@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <title>Laporan SBR Automation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; background: #f8f9fa; color: #212529; }
+        h1, h2 { color: #0b7285; }
+        .summary { background: #e3fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        table { border-collapse: collapse; width: 100%; background: #fff; }
+        th, td { border: 1px solid #dee2e6; padding: 0.5rem; text-align: left; font-size: 0.95rem; }
+        th { background: #0b7285; color: #fff; position: sticky; top: 0; }
+        tr:nth-child(even) { background: #f1f3f5; }
+        a { color: #0b7285; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Laporan Otomatisasi Profiling SBR</h1>
+    <p>Dibuat pada: 2025-12-30 12:22:49</p>
+    <div class="summary">
+        <h2>Ringkasan Level</h2>
+        <ul>
+            <li><strong>OK</strong>: 14</li><li><strong>ERROR</strong>: 1</li>
+        </ul>
+        <p>CSV sumber: <code>log_sbr_autofill_12-19-58.csv</code></p>
+    </div>
+    <h2>Detail Baris</h2>
+    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ts</th>
+      <th>row_index</th>
+      <th>level</th>
+      <th>stage</th>
+      <th>idsbr</th>
+      <th>nama</th>
+      <th>match_value</th>
+      <th>note</th>
+      <th>screenshot</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>20251230_122017</td>
+      <td>7</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>97516609</td>
+      <td>TOKO FURNITURE (SAKARIA)</td>
+      <td>97516609</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251230_122041</td>
+      <td>7</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>97516609</td>
+      <td>TOKO FURNITURE (SAKARIA)</td>
+      <td>97516609</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251230_122051</td>
+      <td>7</td>
+      <td>ERROR</td>
+      <td>SUBMIT</td>
+      <td>97516609</td>
+      <td>TOKO FURNITURE (SAKARIA)</td>
+      <td>97516609</td>
+      <td>NO_SUCCESS_SIGNAL | CODE:SUBMIT_NO_SUCCESS_SIGNAL Tidak ada sinyal sukses setelah konfirmasi submit. | Petunjuk: *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!, Kab/Kota terpilih tidak boleh sama dengan Kab/Kota asal., Minimal 1 kegiatan usaha dan kategori harus terisi</td>
+      <td><a href="../../screenshots/2025-12-30/20251230_122050_submit_issue_7_NO_SUCCESS_SIGNAL.png">20251230_122050_submit_issue_7_NO_SUCCESS_SIGNAL.png</a></td>
+    </tr>
+    <tr>
+      <td>20251230_122100</td>
+      <td>8</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>97516610</td>
+      <td>ARWAN, UD</td>
+      <td>97516610</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251230_122123</td>
+      <td>8</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>97516610</td>
+      <td>ARWAN, UD</td>
+      <td>97516610</td>
+      <td>Form terisi (update=10, skip=8)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251230_122130</td>
+      <td>8</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>97516610</td>
+      <td>ARWAN, UD</td>
+      <td>97516610</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251230_122131</td>
+      <td>8</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>97516610</td>
+      <td>ARWAN, UD</td>
+      <td>97516610</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251230_122140</td>
+      <td>9</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>97516606</td>
+      <td>KONSULTAN SURYA ABADI PT</td>
+      <td>97516606</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251230_122202</td>
+      <td>9</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>97516606</td>
+      <td>KONSULTAN SURYA ABADI PT</td>
+      <td>97516606</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251230_122209</td>
+      <td>9</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>97516606</td>
+      <td>KONSULTAN SURYA ABADI PT</td>
+      <td>97516606</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251230_122210</td>
+      <td>9</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>97516606</td>
+      <td>KONSULTAN SURYA ABADI PT</td>
+      <td>97516606</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251230_122219</td>
+      <td>10</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>97516607</td>
+      <td>KARAOKE KELUARGA (ACO)</td>
+      <td>97516607</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251230_122241</td>
+      <td>10</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>97516607</td>
+      <td>KARAOKE KELUARGA (ACO)</td>
+      <td>97516607</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251230_122248</td>
+      <td>10</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>97516607</td>
+      <td>KARAOKE KELUARGA (ACO)</td>
+      <td>97516607</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251230_122249</td>
+      <td>10</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>97516607</td>
+      <td>KARAOKE KELUARGA (ACO)</td>
+      <td>97516607</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

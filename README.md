@@ -9,6 +9,7 @@ Software CLI berbasis Playwright untuk membantu pengisian Profiling SBR di MATCH
 - Resume/dry-run, auto-scan Excel, deteksi header bertingkat, serta pemetaan status dengan alias/angka.
 - Log CSV, laporan HTML, screenshot per run, dan indeks riwayat run yang dipangkas otomatis.
 - Profil CLI, pemetaan status kustom, dan pembatasan jumlah arsip run.
+- **🆕 Notifikasi WhatsApp otomatis** dengan ringkasan hasil autofill (sukses, error, durasi) via Selenium.
 
 ## Daftar Isi
 
@@ -19,6 +20,7 @@ Software CLI berbasis Playwright untuk membantu pengisian Profiling SBR di MATCH
 - [Menyiapkan Data Profiling](#menyiapkan-data-profiling)
 - [Menjalankan Autofill](#menjalankan-autofill)
 - [Menjalankan Cancel Submit](#menjalankan-cancel-submit)
+- [**🆕 WhatsApp Notification**](#whatsapp-notification)
 - [Struktur Proyek](#struktur-proyek)
 - [Profil CLI](#profil-cli)
 - [Pemetaan Status](#pemetaan-status)
@@ -54,7 +56,7 @@ Untuk langsung jalan (contoh PowerShell):
 python -m venv .venv
 .\.venv\Scripts\activate
 python -m pip install --upgrade pip
-pip install pandas openpyxl playwright
+pip install -r requirements.txt
 playwright install chromium
 & "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\ChromeProfileSBR"
 python sbr_fill.py --match-by idsbr --start 1 --end 5
@@ -81,12 +83,13 @@ python sbr_fill.py --match-by idsbr --start 1 --end 5
    python -m venv .venv
    .\.venv\Scripts\activate
    python -m pip install --upgrade pip
-   pip install pandas openpyxl playwright
+   pip install -r requirements.txt
    playwright install chromium
    ```
 
    - Command Prompt: aktifkan venv dengan `.venv\Scripts\activate.bat`. Git Bash/WSL/Linux/macOS: `source .venv/bin/activate` dan `python3` bila diperlukan.
    - Jika perintah `python` mengarah ke versi lain, gunakan `py -3` atau `python3`.
+   - `requirements.txt` berisi semua dependencies: `pandas`, `openpyxl`, `playwright`, `selenium`, `pyperclip`
    - `playwright install chromium` cukup dijalankan sekali untuk mengunduh browser otomatis.
 
 3. Jalankan Chrome dengan mode remote debugging (dibutuhkan agar Playwright menempel ke sesi MATCHAPRO yang sudah login):
@@ -223,6 +226,79 @@ python sbr_cancel.py --match-by name --start 1 --end 20
 - Riwayat ringkas run tersimpan di `artifacts/logs/index.csv`.
 - Pastikan Excel memuat kolom sesuai pilihan `--match-by` (`idsbr/idsbr_master` atau `nama/nama_usaha/nama_usaha_pembetulan`; mode `index` tidak butuh kolom tambahan).
 - Opsi yang sering dipakai untuk cancel: `--profile`, `--excel`, `--sheet`, `--match-by`, `--start`/`--end`, `--stop-on-error`, `--cdp-endpoint`, `--pause-after-edit`, `--max-wait`, `--run-id`, `--keep-runs`.
+
+---
+
+## 🆕 WhatsApp Notification
+
+Fitur notifikasi WhatsApp otomatis mengirimkan ringkasan hasil autofill setelah proses selesai. Notifikasi mencakup jumlah sukses/error, detail error, durasi eksekusi, dan link ke log file.
+
+### Setup Cepat
+
+1. **Install dependencies (jika belum):**
+   ```powershell
+   pip install -r requirements.txt
+   ```
+   
+   Dependencies yang dibutuhkan: `selenium`, `pyperclip` (sudah termasuk di requirements.txt)
+
+2. **Buat konfigurasi WhatsApp:**
+   ```powershell
+   copy config\whatsapp.example.json config\whatsapp.json
+   ```
+
+3. **Edit `config\whatsapp.json`:**
+   ```json
+   {
+     "enabled": true,
+     "phone_number": "+6281234567890",
+     "chrome_profile_path": "C:\\ChromeProfileSBR"
+   }
+   ```
+
+4. **Jalankan autofill dengan notifikasi:**
+   ```powershell
+   python sbr_fill.py --match-by idsbr --start 1 --end 10 --whatsapp-config config\whatsapp.json
+   ```
+
+5. **Scan QR code** (hanya pertama kali) saat browser Chrome terbuka ke WhatsApp Web.
+
+### Opsi Penggunaan
+
+**Menggunakan config file:**
+```powershell
+python sbr_fill.py --match-by idsbr --start 1 --end 50 --whatsapp-config config\whatsapp.json
+```
+
+**Override nomor via CLI:**
+```powershell
+python sbr_fill.py --match-by idsbr --start 1 --end 50 --whatsapp-number "+6281234567890"
+```
+
+**Kirim ke grup WhatsApp:**
+```powershell
+python sbr_fill.py --match-by idsbr --start 1 --end 50 --whatsapp-group "Tim SBR Bulungan"
+```
+
+### Fitur Notifikasi
+
+- ✅ **Auto-send** setelah autofill selesai
+- 📊 **Ringkasan lengkap**: OK, WARNING, ERROR counts
+- 🔴 **Top 5 errors** dengan detail IDSBR dan nama usaha
+- ⏱️ **Durasi eksekusi** otomatis dihitung
+- 🔒 **Auto-close browser** setelah pesan terkirim (memory efficient)
+- 📱 **Support personal & grup** WhatsApp
+- 🎨 **Custom message template** via config file
+- 🎯 **Conditional notification** (hanya kirim jika error >= threshold)
+
+### Dokumentasi Lengkap
+
+Lihat [WHATSAPP_SETUP.md](WHATSAPP_SETUP.md) untuk:
+- Setup langkah demi langkah
+- Troubleshooting
+- Advanced configuration
+- Custom message templates
+- FAQ
 
 ---
 

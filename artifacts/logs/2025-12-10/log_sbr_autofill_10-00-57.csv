@@ -1,0 +1,11 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251210_100113,1,OK,OPEN_TAB,97516709,PELABUHAN WAODE BURI,97516709,Tab form baru terdeteksi (event page).,
+20251210_100113,1,OK,FINAL_SKIP,97516709,PELABUHAN WAODE BURI,97516709,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251210_100121,2,OK,OPEN_TAB,97516771,"""MUSTIKA SARI, CV""",97516771,Tab form baru terdeteksi (event page).,
+20251210_100121,2,OK,FINAL_SKIP,97516771,"""MUSTIKA SARI, CV""",97516771,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251210_100129,3,OK,OPEN_TAB,97516772,"""IDRAP, PT""",97516772,Tab form baru terdeteksi (event page).,
+20251210_100130,3,OK,FINAL_SKIP,97516772,"""IDRAP, PT""",97516772,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251210_100137,4,OK,OPEN_TAB,97516773,BANK SULTRA KF WAODE BURI,97516773,Tab form baru terdeteksi (event page).,
+20251210_100137,4,OK,FINAL_SKIP,97516773,BANK SULTRA KF WAODE BURI,97516773,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251210_100145,5,OK,OPEN_TAB,97516774,"""KANSAI NUSANTARA, CV""",97516774,Tab form baru terdeteksi (event page).,
+20251210_100146,5,OK,FINAL_SKIP,97516774,"""KANSAI NUSANTARA, CV""",97516774,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,

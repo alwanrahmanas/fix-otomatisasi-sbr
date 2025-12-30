@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <title>Laporan SBR Automation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; background: #f8f9fa; color: #212529; }
+        h1, h2 { color: #0b7285; }
+        .summary { background: #e3fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        table { border-collapse: collapse; width: 100%; background: #fff; }
+        th, td { border: 1px solid #dee2e6; padding: 0.5rem; text-align: left; font-size: 0.95rem; }
+        th { background: #0b7285; color: #fff; position: sticky; top: 0; }
+        tr:nth-child(even) { background: #f1f3f5; }
+        a { color: #0b7285; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Laporan Otomatisasi Profiling SBR</h1>
+    <p>Dibuat pada: 2025-12-11 16:20:17</p>
+    <div class="summary">
+        <h2>Ringkasan Level</h2>
+        <ul>
+            <li><strong>OK</strong>: 18</li><li><strong>ERROR</strong>: 1</li>
+        </ul>
+        <p>CSV sumber: <code>log_sbr_autofill_16-18-08.csv</code></p>
+    </div>
+    <h2>Detail Baris</h2>
+    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ts</th>
+      <th>row_index</th>
+      <th>level</th>
+      <th>stage</th>
+      <th>idsbr</th>
+      <th>nama</th>
+      <th>match_value</th>
+      <th>note</th>
+      <th>screenshot</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>20251211_161831</td>
+      <td>11</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>97516598</td>
+      <td>KLINIK KERATON CARE CENTER (WAYAN)</td>
+      <td>97516598</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161832</td>
+      <td>11</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>97516598</td>
+      <td>KLINIK KERATON CARE CENTER (WAYAN)</td>
+      <td>97516598</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161841</td>
+      <td>12</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>97516600</td>
+      <td>KONTRAKTOR SALURAN IRIGASI NUR ADEN, CV</td>
+      <td>97516600</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161842</td>
+      <td>12</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>97516600</td>
+      <td>KONTRAKTOR SALURAN IRIGASI NUR ADEN, CV</td>
+      <td>97516600</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161851</td>
+      <td>13</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>97516608</td>
+      <td>PEDAGANG SPRING BED (SAKARIA)</td>
+      <td>97516608</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161851</td>
+      <td>13</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>97516608</td>
+      <td>PEDAGANG SPRING BED (SAKARIA)</td>
+      <td>97516608</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161859</td>
+      <td>14</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>97516623</td>
+      <td>ALIF SAPUTRA, CV</td>
+      <td>97516623</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161901</td>
+      <td>14</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>97516623</td>
+      <td>ALIF SAPUTRA, CV</td>
+      <td>97516623</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161910</td>
+      <td>15</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>97516627</td>
+      <td>INDUSTRI PANDAI BESI <KAMALUDIN></td>
+      <td>97516627</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161910</td>
+      <td>15</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>97516627</td>
+      <td>INDUSTRI PANDAI BESI <KAMALUDIN></td>
+      <td>97516627</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161920</td>
+      <td>16</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>97516611</td>
+      <td>TK ISLAM INSAN CITA</td>
+      <td>97516611</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161921</td>
+      <td>16</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>97516611</td>
+      <td>TK ISLAM INSAN CITA</td>
+      <td>97516611</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161931</td>
+      <td>17</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>97516628</td>
+      <td>UPK PNPM MANDIRI PERDESAAN <RISWAN</td>
+      <td>97516628</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161932</td>
+      <td>17</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>97516628</td>
+      <td>UPK PNPM MANDIRI PERDESAAN <RISWAN</td>
+      <td>97516628</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161942</td>
+      <td>18</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>97516722</td>
+      <td>JUAL KOSMETIK <SAMIATI></td>
+      <td>97516722</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161943</td>
+      <td>18</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>97516722</td>
+      <td>JUAL KOSMETIK <SAMIATI></td>
+      <td>97516722</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_161952</td>
+      <td>19</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>97516724</td>
+      <td>CV METAPLANE CONSULINDO CABANG BUTUK</td>
+      <td>97516724</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_162014</td>
+      <td>19</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>97516724</td>
+      <td>CV METAPLANE CONSULINDO CABANG BUTUK</td>
+      <td>97516724</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251211_162017</td>
+      <td>19</td>
+      <td>ERROR</td>
+      <td>SUBMIT</td>
+      <td>97516724</td>
+      <td>CV METAPLANE CONSULINDO CABANG BUTUK</td>
+      <td>97516724</td>
+      <td>ERROR_FILL | CODE:SUBMIT_ERROR_FILL Form menolak submit karena ada isian yang perlu diperbaiki. | Pesan: Masih terdapat isian yang harus diperbaiki! | Petunjuk: Pemberitahuan, Masih terdapat isian yang harus diperbaiki!, *, Email harus terisi, Salah satu opsi harus terpilih</td>
+      <td><a href="../../screenshots/2025-12-11/20251211_162016_submit_issue_19_ERROR_FILL.png">20251211_162016_submit_issue_19_ERROR_FILL.png</a></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

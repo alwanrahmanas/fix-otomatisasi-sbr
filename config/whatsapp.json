@@ -1,0 +1,10 @@
+{
+    "enabled": true,
+    "phone_number": "",
+    "group_name": "Aa Alwan Rahmana Subian",
+    "notify_on_completion": true,
+    "notify_on_error_threshold": 0,
+    "chrome_profile_path": "C:\\ChromeProfileWhatsApp",
+    "wait_for_login_seconds": 90,
+    "message_template": "🤖 *SBR Autofill Report*\\n\\n📅 Run ID: {run_id}\\n⏰ Started: {started_at}\\n⏱️ Duration: {duration}\\n\\n📊 *Summary*\\n✅ Success: {ok_count}\\n⚠️ Warnings: {warn_count}\\n❌ Errors: {error_count}\\n📝 Total: {total_count}\\n\\n{error_details}\\n📁 Log: {log_path}"
+}

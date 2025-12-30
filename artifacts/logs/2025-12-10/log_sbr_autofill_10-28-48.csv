@@ -1,0 +1,5 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251210_102906,30,ERROR,CLICK_EDIT,6432352,"""MUSTIKA SARI, CV""",6432352,"CODE:CLICK_EDIT_EXCEPTION (target idsbr=6432352) : TimeoutError: Locator.wait_for: Timeout 6000ms exceeded.
+Call log:
+  - waiting for locator(""#table_direktori_usaha"") to be visible
+",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-10\20251210_102902_exception_click_edit_30.png

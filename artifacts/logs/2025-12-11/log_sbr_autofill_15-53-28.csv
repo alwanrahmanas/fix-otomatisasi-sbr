@@ -1,0 +1,50 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251211_155356,1,ERROR,OPEN_TAB,97516601,"KONTRAKTOR AZRIN ZABUR, CV",97516601,"Tidak ada tab form: TimeoutError: Timeout 6000ms exceeded while waiting for event ""page"" | URL tidak berubah",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_155354_no_new_tab_1.png
+20251211_155416,2,OK,OPEN_TAB,97516602,KOPERASI SERBA USAHA,97516602,Tab form baru terdeteksi (event page).,
+20251211_155417,2,OK,FINAL_SKIP,97516602,KOPERASI SERBA USAHA,97516602,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251211_155429,3,OK,OPEN_TAB,97516604,"AYUMI CIPTA SARANA, CV",97516604,Tab form baru terdeteksi (event page).,
+20251211_155430,3,OK,FINAL_SKIP,97516604,"AYUMI CIPTA SARANA, CV",97516604,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251211_155440,4,OK,OPEN_TAB,97516605,KOPERASI BERKAH SEJATI,97516605,Tab form baru terdeteksi (event page).,
+20251211_155440,4,OK,FINAL_SKIP,97516605,KOPERASI BERKAH SEJATI,97516605,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251211_155457,5,OK,OPEN_TAB,97516614,SETIA KAWAN UD,97516614,Tab form baru terdeteksi (event page).,
+20251211_155523,5,OK,FILL,97516614,SETIA KAWAN UD,97516614,"Form terisi (update=9, skip=9)",
+20251211_155531,5,OK,SUBMIT,97516614,SETIA KAWAN UD,97516614,Submit final sukses,
+20251211_155532,5,OK,ROW_DONE,97516614,SETIA KAWAN UD,97516614,Baris selesai diproses,
+20251211_155542,6,OK,OPEN_TAB,97516615,TRAVEL(ASDIN SATRIA),97516615,Tab form baru terdeteksi (event page).,
+20251211_155608,6,OK,FILL,97516615,TRAVEL(ASDIN SATRIA),97516615,"Form terisi (update=9, skip=9)",
+20251211_155615,6,OK,SUBMIT,97516615,TRAVEL(ASDIN SATRIA),97516615,Submit final sukses,
+20251211_155616,6,OK,ROW_DONE,97516615,TRAVEL(ASDIN SATRIA),97516615,Baris selesai diproses,
+20251211_155625,7,OK,OPEN_TAB,97516609,TOKO FURNITURE (SAKARIA),97516609,Tab form baru terdeteksi (event page).,
+20251211_155625,7,OK,FINAL_SKIP,97516609,TOKO FURNITURE (SAKARIA),97516609,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251211_155636,8,OK,OPEN_TAB,97516610,"ARWAN, UD",97516610,Tab form baru terdeteksi (event page).,
+20251211_155637,8,OK,FINAL_SKIP,97516610,"ARWAN, UD",97516610,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251211_155651,9,OK,OPEN_TAB,97516606,KONSULTAN SURYA ABADI PT,97516606,Tab form baru terdeteksi (event page).,
+20251211_155652,9,OK,FINAL_SKIP,97516606,KONSULTAN SURYA ABADI PT,97516606,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251211_155709,10,ERROR,OPEN_TAB,97516607,KARAOKE KELUARGA (ACO),97516607,"Tidak ada tab form: TimeoutError: Timeout 6000ms exceeded while waiting for event ""page"" | URL tidak berubah",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_155708_no_new_tab_10.png
+20251211_155734,11,OK,OPEN_TAB,97516598,KLINIK KERATON CARE CENTER (WAYAN),97516598,Tab form baru terdeteksi (event page).,
+20251211_155801,11,OK,FILL,97516598,KLINIK KERATON CARE CENTER (WAYAN),97516598,"Form terisi (update=9, skip=9)",
+20251211_155811,11,ERROR,SUBMIT,97516598,KLINIK KERATON CARE CENTER (WAYAN),97516598,"NO_SUCCESS_SIGNAL | CODE:SUBMIT_NO_SUCCESS_SIGNAL Tidak ada sinyal sukses setelah konfirmasi submit. | Petunjuk: *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!, Kab/Kota terpilih tidak boleh sama dengan Kab/Kota asal., Minimal 1 kegiatan usaha dan kategori harus terisi",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_155810_submit_issue_11_NO_SUCCESS_SIGNAL.png
+20251211_155827,12,OK,OPEN_TAB,97516600,"KONTRAKTOR SALURAN IRIGASI NUR ADEN, CV",97516600,Tab form baru terdeteksi (event page).,
+20251211_155852,12,OK,FILL,97516600,"KONTRAKTOR SALURAN IRIGASI NUR ADEN, CV",97516600,"Form terisi (update=9, skip=9)",
+20251211_155902,12,ERROR,SUBMIT,97516600,"KONTRAKTOR SALURAN IRIGASI NUR ADEN, CV",97516600,"NO_SUCCESS_SIGNAL | CODE:SUBMIT_NO_SUCCESS_SIGNAL Tidak ada sinyal sukses setelah konfirmasi submit. | Petunjuk: *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!, Kab/Kota terpilih tidak boleh sama dengan Kab/Kota asal., Minimal 1 kegiatan usaha dan kategori harus terisi",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_155901_submit_issue_12_NO_SUCCESS_SIGNAL.png
+20251211_155915,13,OK,OPEN_TAB,97516608,PEDAGANG SPRING BED (SAKARIA),97516608,Tab form baru terdeteksi (event page).,
+20251211_155947,13,OK,FILL,97516608,PEDAGANG SPRING BED (SAKARIA),97516608,"Form terisi (update=9, skip=9)",
+20251211_155957,13,ERROR,SUBMIT,97516608,PEDAGANG SPRING BED (SAKARIA),97516608,"NO_SUCCESS_SIGNAL | CODE:SUBMIT_NO_SUCCESS_SIGNAL Tidak ada sinyal sukses setelah konfirmasi submit. | Petunjuk: Success, Berhasil submit data final!, *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_155956_submit_issue_13_NO_SUCCESS_SIGNAL.png
+20251211_160014,14,ERROR,OPEN_TAB,97516623,"ALIF SAPUTRA, CV",97516623,"Tidak ada tab form: TimeoutError: Timeout 6000ms exceeded while waiting for event ""page"" | URL tidak berubah",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_160013_no_new_tab_14.png
+20251211_160028,15,OK,OPEN_TAB,97516627,INDUSTRI PANDAI BESI <KAMALUDIN>,97516627,Tab form baru terdeteksi (event page).,
+20251211_160054,15,OK,FILL,97516627,INDUSTRI PANDAI BESI <KAMALUDIN>,97516627,"Form terisi (update=9, skip=9)",
+20251211_160102,15,OK,SUBMIT,97516627,INDUSTRI PANDAI BESI <KAMALUDIN>,97516627,Submit final sukses,
+20251211_160103,15,OK,ROW_DONE,97516627,INDUSTRI PANDAI BESI <KAMALUDIN>,97516627,Baris selesai diproses,
+20251211_160112,16,OK,OPEN_TAB,97516611,TK ISLAM INSAN CITA,97516611,Tab form baru terdeteksi (event page).,
+20251211_160139,16,OK,FILL,97516611,TK ISLAM INSAN CITA,97516611,"Form terisi (update=9, skip=9)",
+20251211_160149,16,ERROR,SUBMIT,97516611,TK ISLAM INSAN CITA,97516611,"NO_SUCCESS_SIGNAL | CODE:SUBMIT_NO_SUCCESS_SIGNAL Tidak ada sinyal sukses setelah konfirmasi submit. | Petunjuk: *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!, Kab/Kota terpilih tidak boleh sama dengan Kab/Kota asal., Minimal 1 kegiatan usaha dan kategori harus terisi",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_160148_submit_issue_16_NO_SUCCESS_SIGNAL.png
+20251211_160201,17,OK,OPEN_TAB,97516628,UPK PNPM MANDIRI PERDESAAN <RISWAN,97516628,Tab form baru terdeteksi (event page).,
+20251211_160225,17,OK,FILL,97516628,UPK PNPM MANDIRI PERDESAAN <RISWAN,97516628,"Form terisi (update=9, skip=9)",
+20251211_160235,17,ERROR,SUBMIT,97516628,UPK PNPM MANDIRI PERDESAAN <RISWAN,97516628,"NO_SUCCESS_SIGNAL | CODE:SUBMIT_NO_SUCCESS_SIGNAL Tidak ada sinyal sukses setelah konfirmasi submit. | Petunjuk: *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!, Kab/Kota terpilih tidak boleh sama dengan Kab/Kota asal., Minimal 1 kegiatan usaha dan kategori harus terisi",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_160234_submit_issue_17_NO_SUCCESS_SIGNAL.png
+20251211_160251,18,OK,OPEN_TAB,97516722,JUAL KOSMETIK <SAMIATI>,97516722,Tab form baru terdeteksi (event page).,
+20251211_160314,18,OK,FILL,97516722,JUAL KOSMETIK <SAMIATI>,97516722,"Form terisi (update=9, skip=9)",
+20251211_160324,18,ERROR,SUBMIT,97516722,JUAL KOSMETIK <SAMIATI>,97516722,"NO_SUCCESS_SIGNAL | CODE:SUBMIT_NO_SUCCESS_SIGNAL Tidak ada sinyal sukses setelah konfirmasi submit. | Petunjuk: *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!, Kab/Kota terpilih tidak boleh sama dengan Kab/Kota asal., Minimal 1 kegiatan usaha dan kategori harus terisi",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_160323_submit_issue_18_NO_SUCCESS_SIGNAL.png
+20251211_160344,19,ERROR,OPEN_TAB,97516724,CV METAPLANE CONSULINDO CABANG BUTUK,97516724,"Tidak ada tab form: TimeoutError: Timeout 6000ms exceeded while waiting for event ""page"" | URL tidak berubah",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_160343_no_new_tab_19.png
+20251211_160403,20,OK,OPEN_TAB,97516725,KOPERASI MITRA JAYA ( LAODE SUPRIADIN ),97516725,Tab form baru terdeteksi (event page).,
+20251211_160426,20,OK,FILL,97516725,KOPERASI MITRA JAYA ( LAODE SUPRIADIN ),97516725,"Form terisi (update=9, skip=9)",
+20251211_160435,20,ERROR,SUBMIT,97516725,KOPERASI MITRA JAYA ( LAODE SUPRIADIN ),97516725,"NO_SUCCESS_SIGNAL | CODE:SUBMIT_NO_SUCCESS_SIGNAL Tidak ada sinyal sukses setelah konfirmasi submit. | Petunjuk: *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!, Kab/Kota terpilih tidak boleh sama dengan Kab/Kota asal., Minimal 1 kegiatan usaha dan kategori harus terisi",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_160434_submit_issue_20_NO_SUCCESS_SIGNAL.png

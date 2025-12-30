@@ -1,0 +1,5 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251230_121320,3,OK,OPEN_TAB,97516604,"AYUMI CIPTA SARANA, CV",97516604,Tab form baru terdeteksi (event page).,
+20251230_121320,3,OK,FINAL_SKIP,97516604,"AYUMI CIPTA SARANA, CV",97516604,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251230_121329,4,OK,OPEN_TAB,97516605,KOPERASI BERKAH SEJATI,97516605,Tab form baru terdeteksi (event page).,
+20251230_121330,4,OK,FINAL_SKIP,97516605,KOPERASI BERKAH SEJATI,97516605,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,

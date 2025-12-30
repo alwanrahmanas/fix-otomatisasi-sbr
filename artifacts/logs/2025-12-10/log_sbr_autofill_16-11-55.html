@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <title>Laporan SBR Automation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; background: #f8f9fa; color: #212529; }
+        h1, h2 { color: #0b7285; }
+        .summary { background: #e3fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        table { border-collapse: collapse; width: 100%; background: #fff; }
+        th, td { border: 1px solid #dee2e6; padding: 0.5rem; text-align: left; font-size: 0.95rem; }
+        th { background: #0b7285; color: #fff; position: sticky; top: 0; }
+        tr:nth-child(even) { background: #f1f3f5; }
+        a { color: #0b7285; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Laporan Otomatisasi Profiling SBR</h1>
+    <p>Dibuat pada: 2025-12-10 16:14:55</p>
+    <div class="summary">
+        <h2>Ringkasan Level</h2>
+        <ul>
+            <li><strong>OK</strong>: 26</li>
+        </ul>
+        <p>CSV sumber: <code>log_sbr_autofill_16-11-55.csv</code></p>
+    </div>
+    <h2>Detail Baris</h2>
+    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ts</th>
+      <th>row_index</th>
+      <th>level</th>
+      <th>stage</th>
+      <th>idsbr</th>
+      <th>nama</th>
+      <th>match_value</th>
+      <th>note</th>
+      <th>screenshot</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>20251210_161209</td>
+      <td>72</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>12602302</td>
+      <td>INDUSTRI PEMBUATAN ROTI <YETIK MUNAWAROH> <YETIK MUNAWAROH></td>
+      <td>12602302</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161209</td>
+      <td>72</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>12602302</td>
+      <td>INDUSTRI PEMBUATAN ROTI <YETIK MUNAWAROH> <YETIK MUNAWAROH></td>
+      <td>12602302</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161217</td>
+      <td>73</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>12425614</td>
+      <td>INDUSTRI PENGOLAHAN KOPRA <LA RUKU> <LA RUKU></td>
+      <td>12425614</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161217</td>
+      <td>73</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>12425614</td>
+      <td>INDUSTRI PENGOLAHAN KOPRA <LA RUKU> <LA RUKU></td>
+      <td>12425614</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161224</td>
+      <td>74</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>14245251</td>
+      <td>MENJUAL MAKANAN JADI <IRMA DEWINATI> <IRMA DEWINATI></td>
+      <td>14245251</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161225</td>
+      <td>74</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>14245251</td>
+      <td>MENJUAL MAKANAN JADI <IRMA DEWINATI> <IRMA DEWINATI></td>
+      <td>14245251</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161232</td>
+      <td>75</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>14786717</td>
+      <td>INDUSTRI MAKANAN JADI <KIKI ANRIANI> <KIKI ANRIANI></td>
+      <td>14786717</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161250</td>
+      <td>75</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>14786717</td>
+      <td>INDUSTRI MAKANAN JADI <KIKI ANRIANI> <KIKI ANRIANI></td>
+      <td>14786717</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161258</td>
+      <td>75</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>14786717</td>
+      <td>INDUSTRI MAKANAN JADI <KIKI ANRIANI> <KIKI ANRIANI></td>
+      <td>14786717</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161259</td>
+      <td>75</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>14786717</td>
+      <td>INDUSTRI MAKANAN JADI <KIKI ANRIANI> <KIKI ANRIANI></td>
+      <td>14786717</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161307</td>
+      <td>76</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>15615434</td>
+      <td>INDUSTRI PENGOLAHAN KOPRA <AUSI> <AUSI></td>
+      <td>15615434</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161307</td>
+      <td>76</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>15615434</td>
+      <td>INDUSTRI PENGOLAHAN KOPRA <AUSI> <AUSI></td>
+      <td>15615434</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161314</td>
+      <td>77</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>15340030</td>
+      <td>JUAL BELI IKAN <WASIA> <WASIA></td>
+      <td>15340030</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161333</td>
+      <td>77</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>15340030</td>
+      <td>JUAL BELI IKAN <WASIA> <WASIA></td>
+      <td>15340030</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161338</td>
+      <td>77</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>15340030</td>
+      <td>JUAL BELI IKAN <WASIA> <WASIA></td>
+      <td>15340030</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161339</td>
+      <td>77</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>15340030</td>
+      <td>JUAL BELI IKAN <WASIA> <WASIA></td>
+      <td>15340030</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161346</td>
+      <td>78</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>14584778</td>
+      <td>INDUSTRI PENGOLAHAN KOPRA <SINARUDIN> <SINARUDIN></td>
+      <td>14584778</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161347</td>
+      <td>78</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>14584778</td>
+      <td>INDUSTRI PENGOLAHAN KOPRA <SINARUDIN> <SINARUDIN></td>
+      <td>14584778</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161354</td>
+      <td>79</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>14803263</td>
+      <td>PERDAGANGAN ECERAN SEMBAKO <SAHMAN> <SAHMAN></td>
+      <td>14803263</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161413</td>
+      <td>79</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>14803263</td>
+      <td>PERDAGANGAN ECERAN SEMBAKO <SAHMAN> <SAHMAN></td>
+      <td>14803263</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161419</td>
+      <td>79</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>14803263</td>
+      <td>PERDAGANGAN ECERAN SEMBAKO <SAHMAN> <SAHMAN></td>
+      <td>14803263</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161420</td>
+      <td>79</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>14803263</td>
+      <td>PERDAGANGAN ECERAN SEMBAKO <SAHMAN> <SAHMAN></td>
+      <td>14803263</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161429</td>
+      <td>80</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>13988630</td>
+      <td>INDUSTRI PENGOLAHAN KOPRA <HALWIA> <HALWIA></td>
+      <td>13988630</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161448</td>
+      <td>80</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>13988630</td>
+      <td>INDUSTRI PENGOLAHAN KOPRA <HALWIA> <HALWIA></td>
+      <td>13988630</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161454</td>
+      <td>80</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>13988630</td>
+      <td>INDUSTRI PENGOLAHAN KOPRA <HALWIA> <HALWIA></td>
+      <td>13988630</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_161455</td>
+      <td>80</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>13988630</td>
+      <td>INDUSTRI PENGOLAHAN KOPRA <HALWIA> <HALWIA></td>
+      <td>13988630</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

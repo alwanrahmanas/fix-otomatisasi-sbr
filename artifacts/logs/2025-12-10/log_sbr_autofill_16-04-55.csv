@@ -1,0 +1,5 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251210_160508,71,ERROR,CLICK_EDIT,14560323,INDUSTRI PENGOLAHAN KOPRA <MUHAMAD ZAIN> <MUHAMAD ZAIN>,14560323,"CODE:CLICK_EDIT_EXCEPTION (target idsbr=14560323) : TimeoutError: Locator.wait_for: Timeout 6000ms exceeded.
+Call log:
+  - waiting for locator(""#table_direktori_usaha"") to be visible
+",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-10\20251210_160508_exception_click_edit_71.png

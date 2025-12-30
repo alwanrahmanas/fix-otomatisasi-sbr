@@ -1,0 +1,5 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251230_115952,1,OK,OPEN_TAB,97516601,"KONTRAKTOR AZRIN ZABUR, CV",97516601,Tab form baru terdeteksi (event page).,
+20251230_115952,1,OK,FINAL_SKIP,97516601,"KONTRAKTOR AZRIN ZABUR, CV",97516601,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251230_120000,2,OK,OPEN_TAB,97516602,KOPERASI SERBA USAHA,97516602,Tab form baru terdeteksi (event page).,
+20251230_120000,2,OK,FINAL_SKIP,97516602,KOPERASI SERBA USAHA,97516602,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,

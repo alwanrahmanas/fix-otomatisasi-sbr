@@ -1,0 +1,10 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251211_162150,19,OK,OPEN_TAB,97516724,CV METAPLANE CONSULINDO CABANG BUTUK,97516724,Tab form baru terdeteksi (event page).,
+20251211_162209,19,OK,FILL,97516724,CV METAPLANE CONSULINDO CABANG BUTUK,97516724,"Form terisi (update=9, skip=9)",
+20251211_162216,19,OK,SUBMIT,97516724,CV METAPLANE CONSULINDO CABANG BUTUK,97516724,Submit final sukses,
+20251211_162217,19,OK,ROW_DONE,97516724,CV METAPLANE CONSULINDO CABANG BUTUK,97516724,Baris selesai diproses,
+20251211_162226,20,OK,OPEN_TAB,97516725,KOPERASI MITRA JAYA ( LAODE SUPRIADIN ),97516725,Tab form baru terdeteksi (event page).,
+20251211_162227,20,OK,FINAL_SKIP,97516725,KOPERASI MITRA JAYA ( LAODE SUPRIADIN ),97516725,CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).,
+20251211_162236,21,OK,OPEN_TAB,97516726,"BERKAH MORINDO,PT",97516726,Tab form baru terdeteksi (event page).,
+20251211_162301,21,OK,FILL,97516726,"BERKAH MORINDO,PT",97516726,"Form terisi (update=10, skip=8)",
+20251211_162305,21,ERROR,SUBMIT,97516726,"BERKAH MORINDO,PT",97516726,"ERROR_FILL | CODE:SUBMIT_ERROR_FILL Form menolak submit karena ada isian yang perlu diperbaiki. | Pesan: Masih terdapat isian yang harus diperbaiki! | Petunjuk: Pemberitahuan, Masih terdapat isian yang harus diperbaiki!, *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-11\20251211_162304_submit_issue_21_ERROR_FILL.png

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <title>Laporan SBR Automation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; background: #f8f9fa; color: #212529; }
+        h1, h2 { color: #0b7285; }
+        .summary { background: #e3fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        table { border-collapse: collapse; width: 100%; background: #fff; }
+        th, td { border: 1px solid #dee2e6; padding: 0.5rem; text-align: left; font-size: 0.95rem; }
+        th { background: #0b7285; color: #fff; position: sticky; top: 0; }
+        tr:nth-child(even) { background: #f1f3f5; }
+        a { color: #0b7285; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Laporan Otomatisasi Profiling SBR</h1>
+    <p>Dibuat pada: 2025-12-10 17:01:50</p>
+    <div class="summary">
+        <h2>Ringkasan Level</h2>
+        <ul>
+            <li><strong>OK</strong>: 40</li>
+        </ul>
+        <p>CSV sumber: <code>log_sbr_autofill_16-56-39.csv</code></p>
+    </div>
+    <h2>Detail Baris</h2>
+    <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>ts</th>
+      <th>row_index</th>
+      <th>level</th>
+      <th>stage</th>
+      <th>idsbr</th>
+      <th>nama</th>
+      <th>match_value</th>
+      <th>note</th>
+      <th>screenshot</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>20251210_165653</td>
+      <td>130</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>32436550</td>
+      <td>NIA ASTUTI</td>
+      <td>32436550</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165653</td>
+      <td>130</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>32436550</td>
+      <td>NIA ASTUTI</td>
+      <td>32436550</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165700</td>
+      <td>131</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>26584120</td>
+      <td>ILIAS</td>
+      <td>26584120</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165719</td>
+      <td>131</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>26584120</td>
+      <td>ILIAS</td>
+      <td>26584120</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165724</td>
+      <td>131</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>26584120</td>
+      <td>ILIAS</td>
+      <td>26584120</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165725</td>
+      <td>131</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>26584120</td>
+      <td>ILIAS</td>
+      <td>26584120</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165734</td>
+      <td>132</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>27935457</td>
+      <td>MARSUDIN</td>
+      <td>27935457</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165753</td>
+      <td>132</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>27935457</td>
+      <td>MARSUDIN</td>
+      <td>27935457</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165758</td>
+      <td>132</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>27935457</td>
+      <td>MARSUDIN</td>
+      <td>27935457</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165758</td>
+      <td>132</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>27935457</td>
+      <td>MARSUDIN</td>
+      <td>27935457</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165806</td>
+      <td>133</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>28231057</td>
+      <td>JUSRI</td>
+      <td>28231057</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165825</td>
+      <td>133</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>28231057</td>
+      <td>JUSRI</td>
+      <td>28231057</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165830</td>
+      <td>133</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>28231057</td>
+      <td>JUSRI</td>
+      <td>28231057</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165830</td>
+      <td>133</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>28231057</td>
+      <td>JUSRI</td>
+      <td>28231057</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165837</td>
+      <td>134</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>26619731</td>
+      <td>MARLENI</td>
+      <td>26619731</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165856</td>
+      <td>134</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>26619731</td>
+      <td>MARLENI</td>
+      <td>26619731</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165901</td>
+      <td>134</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>26619731</td>
+      <td>MARLENI</td>
+      <td>26619731</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165902</td>
+      <td>134</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>26619731</td>
+      <td>MARLENI</td>
+      <td>26619731</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165908</td>
+      <td>135</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>29454491</td>
+      <td>RANGGA BRAMANDANA</td>
+      <td>29454491</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165927</td>
+      <td>135</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>29454491</td>
+      <td>RANGGA BRAMANDANA</td>
+      <td>29454491</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165933</td>
+      <td>135</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>29454491</td>
+      <td>RANGGA BRAMANDANA</td>
+      <td>29454491</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165934</td>
+      <td>135</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>29454491</td>
+      <td>RANGGA BRAMANDANA</td>
+      <td>29454491</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165941</td>
+      <td>136</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>27573346</td>
+      <td>WAODE ASNI</td>
+      <td>27573346</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_165959</td>
+      <td>136</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>27573346</td>
+      <td>WAODE ASNI</td>
+      <td>27573346</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170005</td>
+      <td>136</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>27573346</td>
+      <td>WAODE ASNI</td>
+      <td>27573346</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170005</td>
+      <td>136</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>27573346</td>
+      <td>WAODE ASNI</td>
+      <td>27573346</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170013</td>
+      <td>137</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>32293942</td>
+      <td>ANDRIANI SOLFIA ROZA</td>
+      <td>32293942</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170031</td>
+      <td>137</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>32293942</td>
+      <td>ANDRIANI SOLFIA ROZA</td>
+      <td>32293942</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170036</td>
+      <td>137</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>32293942</td>
+      <td>ANDRIANI SOLFIA ROZA</td>
+      <td>32293942</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170037</td>
+      <td>137</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>32293942</td>
+      <td>ANDRIANI SOLFIA ROZA</td>
+      <td>32293942</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170044</td>
+      <td>138</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>32348798</td>
+      <td>JEPRI</td>
+      <td>32348798</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170104</td>
+      <td>138</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>32348798</td>
+      <td>JEPRI</td>
+      <td>32348798</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170109</td>
+      <td>138</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>32348798</td>
+      <td>JEPRI</td>
+      <td>32348798</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170110</td>
+      <td>138</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>32348798</td>
+      <td>JEPRI</td>
+      <td>32348798</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170117</td>
+      <td>139</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>26901625</td>
+      <td>SETIA</td>
+      <td>26901625</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170117</td>
+      <td>139</td>
+      <td>OK</td>
+      <td>FINAL_SKIP</td>
+      <td>26901625</td>
+      <td>SETIA</td>
+      <td>26901625</td>
+      <td>CODE:FINAL_ALREADY_SUBMITTED Dilewati: form sudah final (tombol Cancel Submit terlihat).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170125</td>
+      <td>140</td>
+      <td>OK</td>
+      <td>OPEN_TAB</td>
+      <td>30573657</td>
+      <td>Nurlia</td>
+      <td>30573657</td>
+      <td>Tab form baru terdeteksi (event page).</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170144</td>
+      <td>140</td>
+      <td>OK</td>
+      <td>FILL</td>
+      <td>30573657</td>
+      <td>Nurlia</td>
+      <td>30573657</td>
+      <td>Form terisi (update=9, skip=9)</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170149</td>
+      <td>140</td>
+      <td>OK</td>
+      <td>SUBMIT</td>
+      <td>30573657</td>
+      <td>Nurlia</td>
+      <td>30573657</td>
+      <td>Submit final sukses</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>20251210_170150</td>
+      <td>140</td>
+      <td>OK</td>
+      <td>ROW_DONE</td>
+      <td>30573657</td>
+      <td>Nurlia</td>
+      <td>30573657</td>
+      <td>Baris selesai diproses</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

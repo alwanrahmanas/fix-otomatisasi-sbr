@@ -1,0 +1,16 @@
+ts,row_index,level,stage,idsbr,nama,match_value,note,screenshot
+20251230_122017,7,OK,OPEN_TAB,97516609,TOKO FURNITURE (SAKARIA),97516609,Tab form baru terdeteksi (event page).,
+20251230_122041,7,OK,FILL,97516609,TOKO FURNITURE (SAKARIA),97516609,"Form terisi (update=9, skip=9)",
+20251230_122051,7,ERROR,SUBMIT,97516609,TOKO FURNITURE (SAKARIA),97516609,"NO_SUCCESS_SIGNAL | CODE:SUBMIT_NO_SUCCESS_SIGNAL Tidak ada sinyal sukses setelah konfirmasi submit. | Petunjuk: *, Salah satu opsi harus terpilih, Belum ada idsbr master yang terkonfimasi!, Kab/Kota terpilih tidak boleh sama dengan Kab/Kota asal., Minimal 1 kegiatan usaha dan kategori harus terisi",C:\Users\US3R\OneDrive\Dokumen\Kerja\2025\SBR\otomatisasisbr-6502\artifacts\screenshots\2025-12-30\20251230_122050_submit_issue_7_NO_SUCCESS_SIGNAL.png
+20251230_122100,8,OK,OPEN_TAB,97516610,"ARWAN, UD",97516610,Tab form baru terdeteksi (event page).,
+20251230_122123,8,OK,FILL,97516610,"ARWAN, UD",97516610,"Form terisi (update=10, skip=8)",
+20251230_122130,8,OK,SUBMIT,97516610,"ARWAN, UD",97516610,Submit final sukses,
+20251230_122131,8,OK,ROW_DONE,97516610,"ARWAN, UD",97516610,Baris selesai diproses,
+20251230_122140,9,OK,OPEN_TAB,97516606,KONSULTAN SURYA ABADI PT,97516606,Tab form baru terdeteksi (event page).,
+20251230_122202,9,OK,FILL,97516606,KONSULTAN SURYA ABADI PT,97516606,"Form terisi (update=9, skip=9)",
+20251230_122209,9,OK,SUBMIT,97516606,KONSULTAN SURYA ABADI PT,97516606,Submit final sukses,
+20251230_122210,9,OK,ROW_DONE,97516606,KONSULTAN SURYA ABADI PT,97516606,Baris selesai diproses,
+20251230_122219,10,OK,OPEN_TAB,97516607,KARAOKE KELUARGA (ACO),97516607,Tab form baru terdeteksi (event page).,
+20251230_122241,10,OK,FILL,97516607,KARAOKE KELUARGA (ACO),97516607,"Form terisi (update=9, skip=9)",
+20251230_122248,10,OK,SUBMIT,97516607,KARAOKE KELUARGA (ACO),97516607,Submit final sukses,
+20251230_122249,10,OK,ROW_DONE,97516607,KARAOKE KELUARGA (ACO),97516607,Baris selesai diproses,
