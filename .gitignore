@@ -32,3 +32,31 @@ test-results/
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Logs and runtime files
+*.log
+*.tmp
+*.bak
+
+# Image logs / debug outputs
+*log*.png
+*log*.jpg
+*log*.jpeg
+*log*.webp
+
+artifacts/**/*.png
+artifacts/**/*.jpg
+
+*.png
+*.jpg
+*.jpeg
+*.webp
+
+# secrets
+config/whatsapp.json
+
+# runtime artifacts
+artifacts/
+
+# data
+data/*.xlsx
