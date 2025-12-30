@@ -586,3 +586,75 @@ async def process_autofill(options: AutofillOptions, config: RuntimeConfig) -> N
             print(
                 f" - Baris {issue.row_index} [{issue.level}/{issue.stage}]: {note}"
             )
+
+
+async def process_autofill_with_notification(
+    options: AutofillOptions, config: RuntimeConfig, whatsapp_config=None
+) -> None:
+    """Process autofill with optional WhatsApp notification.
+
+    Args:
+        options: Autofill options
+        config: Runtime configuration
+        whatsapp_config: Optional WhatsApp configuration
+    """
+    import time
+
+    start_time = time.time()
+
+    # Run the autofill process
+    await process_autofill(options, config)
+
+    # Send WhatsApp notification if configured
+    if whatsapp_config and whatsapp_config.enabled:
+        try:
+            from .whatsapp_notifier import WhatsAppNotifier, create_notification_summary
+
+            # Read log to get error details
+            log_filename = f"log_sbr_autofill_{config.run_id}.csv" if config.run_id else "log_sbr_autofill.csv"
+            log_path = config.log_dir / log_filename
+
+            # Parse log to count results
+            ok_count = 0
+            warn_count = 0
+            error_count = 0
+            error_rows = []
+
+            if log_path.exists():
+                import csv
+
+                with open(log_path, encoding="utf-8") as f:
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        level = row.get("level", "").upper()
+                        if level == "OK":
+                            ok_count += 1
+                        elif level == "WARN":
+                            warn_count += 1
+                        elif level == "ERROR":
+                            error_count += 1
+                            error_rows.append(row)
+
+            # Create notification summary
+            summary = create_notification_summary(
+                run_id=config.run_id or "unknown",
+                started_at=config.run_started_at or "",
+                ok_count=ok_count,
+                warn_count=warn_count,
+                error_count=error_count,
+                error_rows=error_rows,
+                log_path=str(log_path),
+                start_time=start_time,
+            )
+
+            # Send notification
+            notifier = WhatsAppNotifier(whatsapp_config)
+            success = notifier.send_notification(summary)
+
+            if success:
+                print("\n✅ WhatsApp notification sent successfully!")
+            else:
+                print("\n⚠️  WhatsApp notification failed to send")
+
+        except Exception as exc:  # noqa: BLE001
+            print(f"\n❌ Error sending WhatsApp notification: {exc}")

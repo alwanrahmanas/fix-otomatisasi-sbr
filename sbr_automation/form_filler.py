@@ -349,10 +349,16 @@ async def _fill_additional_fields(page: Page, ctx: RowContext, config: RuntimeCo
     else:
         _form_log("Sumber Profiling dilewati (Excel kosong).")
 
-    if nonempty(ctx.catatan):
+    # Jika catatan kosong, coba fallback ke sumber_profiling
+    catatan_value = ctx.catatan
+    if not nonempty(catatan_value) and nonempty(ctx.sumber):
+        catatan_value = ctx.sumber
+        _form_log(f"Catatan kosong → diisi otomatis dengan Sumber Profiling: {catatan_value}")
+
+    if nonempty(catatan_value):
         try:
             await page.wait_for_selector("#catatan_profiling", state="visible", timeout=3000)
-            await page.fill("#catatan_profiling", ctx.catatan)
+            await page.fill("#catatan_profiling", catatan_value)
             await page.evaluate(
                 """
                 () => {
@@ -364,14 +370,15 @@ async def _fill_additional_fields(page: Page, ctx: RowContext, config: RuntimeCo
                 }
                 """
             )
-            _form_log(f"Catatan diisi ({len(ctx.catatan)} karakter).")
+            _form_log(f"Catatan diisi ({len(catatan_value)} karakter).")
             updated += 1
         except Exception as exc:  # noqa: BLE001
             errors.append(f"catatan_profiling: {describe_exception(exc)}")
             _form_log(f"Gagal mengisi catatan: {describe_exception(exc)}")
         await slow_pause(page, config)
     else:
-        _form_log("Catatan Profiling dilewati (Excel kosong).")
+        _form_log("Catatan Profiling dilewati (Excel & fallback kosong).")
+
 
     return {"updated": updated, "errors": errors}
 

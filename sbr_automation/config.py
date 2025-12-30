@@ -146,6 +146,51 @@ def load_profile_defaults(path: str | None, allowed_keys: set[str]) -> Dict[str,
     return dict(raw)
 
 
+def load_whatsapp_config(path: str | Path | None):
+    """Load WhatsApp notification configuration from JSON file.
+
+    Args:
+        path: Path to WhatsApp config JSON file
+
+    Returns:
+        WhatsAppConfig object with loaded settings
+    """
+    from .whatsapp_notifier import WhatsAppConfig
+
+    # Default config
+    default_config = WhatsAppConfig()
+
+    if not path:
+        return default_config
+
+    file_path = Path(path).expanduser()
+    if not file_path.is_absolute():
+        file_path = (Path.cwd() / file_path).resolve()
+
+    if not file_path.is_file():
+        raise FileNotFoundError(f"File WhatsApp config tidak ditemukan: {file_path}")
+
+    try:
+        raw = json.loads(file_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"File WhatsApp config tidak valid (JSON error): {exc}") from exc
+
+    if not isinstance(raw, dict):
+        raise RuntimeError("File WhatsApp config harus berupa objek/dictionary JSON.")
+
+    # Update config with values from file
+    return WhatsAppConfig(
+        enabled=raw.get("enabled", default_config.enabled),
+        phone_number=raw.get("phone_number", default_config.phone_number),
+        group_name=raw.get("group_name", default_config.group_name),
+        notify_on_completion=raw.get("notify_on_completion", default_config.notify_on_completion),
+        notify_on_error_threshold=raw.get("notify_on_error_threshold", default_config.notify_on_error_threshold),
+        chrome_profile_path=raw.get("chrome_profile_path", default_config.chrome_profile_path),
+        wait_for_login_seconds=raw.get("wait_for_login_seconds", default_config.wait_for_login_seconds),
+        message_template=raw.get("message_template", default_config.message_template),
+    )
+
+
 def _sanitize_run_id(candidate: str | None, fallback: str) -> str:
     if not candidate:
         return fallback
