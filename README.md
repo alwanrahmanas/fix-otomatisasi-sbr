@@ -9,7 +9,8 @@ Software CLI berbasis Playwright untuk membantu pengisian Profiling SBR di MATCH
 - Resume/dry-run, auto-scan Excel, deteksi header bertingkat, serta pemetaan status dengan alias/angka.
 - Log CSV, laporan HTML, screenshot per run, dan indeks riwayat run yang dipangkas otomatis.
 - Profil CLI, pemetaan status kustom, dan pembatasan jumlah arsip run.
-- **🆕 Notifikasi WhatsApp otomatis** dengan ringkasan hasil autofill (sukses, error, durasi) via Selenium.
+- **🆕 Notifikasi WhatsApp otomatis** dengan ringkasan hasil autofill (sukses, error, durasi) dan range baris.
+- **🆕 Configurable Defaults**: Pengisian otomatis untuk field kosong (Alamat, Sumber, Catatan) dengan nilai default yang dapat dikonfigurasi.
 
 ## Daftar Isi
 
@@ -21,6 +22,7 @@ Software CLI berbasis Playwright untuk membantu pengisian Profiling SBR di MATCH
 - [Menjalankan Autofill](#menjalankan-autofill)
 - [Menjalankan Cancel Submit](#menjalankan-cancel-submit)
 - [**🆕 WhatsApp Notification**](#whatsapp-notification)
+- [**🔄 Batch Runner**](#batch-runner)
 - [Struktur Proyek](#struktur-proyek)
 - [Profil CLI](#profil-cli)
 - [Pemetaan Status](#pemetaan-status)
@@ -302,23 +304,189 @@ Lihat [WHATSAPP_SETUP.md](WHATSAPP_SETUP.md) untuk:
 
 ---
 
+## 🔄 Batch Runner
+
+Untuk memproses data dalam jumlah besar, gunakan **`batch_runner.py`** yang akan membagi data menjadi batch-batch kecil dan memproses secara berurutan.
+
+### Fitur Batch Runner
+
+- ✅ **Auto-split data** menjadi batch berukuran tetap (default 30 baris)
+- ✅ **Smart continuation** - Lanjut dari baris terakhir yang diproses (bukan +30)
+- ✅ **Auto-resume mode** - Skip baris yang sudah OK, retry yang gagal
+- ✅ **Comprehensive logging** - Semua output disimpan ke file log
+- ✅ **Real-time monitoring** - Lihat progress setiap batch di console
+- ✅ **Batch statistics** - Ringkasan detail per batch (sukses, error, dilewati)
+- ✅ **Warning detection** - Peringatan otomatis jika batch tidak sesuai ekspektasi
+- ✅ **Overall summary** - Ringkasan keseluruhan setelah semua batch selesai
+- ✅ **Persistent logs** - Log tersimpan di `artifacts/logs/batch_runner/`
+- ✅ **Auto-continue** - Lanjut ke batch berikutnya meski ada error
+- ✅ **Configurable** - Mudah disesuaikan (batch size, start row, dll)
+
+### Konfigurasi
+
+Edit `batch_runner.py` untuk menyesuaikan:
+
+```python
+DATA_DIR = Path("data")              # Folder Excel
+BATCH_SIZE = 30                      # Ukuran batch (baris per batch)
+START_FROM = 30                      # Mulai dari baris ke-
+WHATSAPP_CONFIG = "config/whatsapp.json"
+```
+
+### Cara Menggunakan
+
+```powershell
+# Jalankan batch runner
+python batch_runner.py
+```
+
+Script akan:
+1. Mencari file Excel di folder `data/`
+2. Menghitung total baris data
+3. Membagi menjadi batch berukuran `BATCH_SIZE`
+4. Menjalankan `sbr_fill.py` untuk setiap batch dengan `--resume` aktif
+5. Menampilkan ringkasan detail per batch
+6. Menyimpan log lengkap ke file
+
+### Cara Kerja Auto-Resume
+
+Batch runner menggunakan `--resume` mode secara otomatis untuk menghindari duplikasi:
+
+**Skenario: Batch #1 ada yang gagal**
+```
+Batch #1: Baris 151-180 (30 baris)
+  ✅ Sukses: 29 baris (152-180)
+  ❌ Error: 1 baris (151)
+
+Batch #2: Baris 181-210 (30 baris)
+  → Baris 152-180: SKIP (sudah OK di log)
+  → Baris 151: RETRY (masih ERROR)
+  → Baris 181-210: PROSES
+```
+
+**Keuntungan:**
+- ✅ Baris yang gagal akan **dikerjakan ulang** otomatis
+- ✅ Baris yang sudah sukses **tidak diproses ulang** (efisien)
+- ✅ Tidak ada data yang terlewat
+- ✅ Tidak ada duplikasi data
+
+**Smart Continuation Logic:**
+- Jika semua baris diproses → lanjut ke batch berikutnya
+- Jika ada yang gagal → lanjut ke batch berikutnya (resume akan handle retry)
+- Jika tidak ada yang diproses → retry batch yang sama (max 1x retry)
+
+
+### Output Batch Runner
+
+**Console Output:**
+```
+📝 Log batch runner: artifacts/logs/batch_runner/batch_run_2025-12-30_15-17-00.log
+⏰ Waktu mulai: 2025-12-30 15:17:00
+✅ Total data ditemukan: 150 baris
+🚀 Memulai batch process dari baris 30 dengan ukuran 30...
+
+======================================================================
+▶️  BATCH #1: Baris 30 sampai 59 (Total: 30 baris)
+======================================================================
+
+📋 Output dari sbr_fill.py:
+----------------------------------------------------------------------
+  Memeriksa koneksi Chrome (CDP)...
+  Chrome CDP siap digunakan.
+  Baris 30: PT MAJU JAYA
+  ...
+----------------------------------------------------------------------
+
+📊 RINGKASAN BATCH #1:
+  ⏱️  Durasi        : 45.32 detik
+  📝 Diharapkan    : 30 baris
+  ✅ Diproses      : 30 baris
+  🎯 Sukses        : 28 baris
+  ❌ Error         : 2 baris
+  ⏭️  Dilewati      : 0 baris
+  🔢 Return code   : 0
+
+⏳ Istirahat 5 detik sebelum batch berikutnya...
+```
+
+**Warning Detection:**
+```
+⚠️  PERINGATAN: Hanya 1 dari 30 baris yang diproses!
+   Kemungkinan penyebab:
+   - Error yang menghentikan proses lebih awal
+   - Data Excel tidak sesuai ekspektasi
+   - Resume mode melewati baris tertentu
+   - Periksa log detail di atas untuk informasi lebih lanjut
+```
+
+**Final Summary:**
+```
+======================================================================
+🎉 SEMUA BATCH SELESAI!
+======================================================================
+
+📊 RINGKASAN KESELURUHAN:
+  📦 Total batch dijalankan : 5
+  ✅ Batch sukses          : 4
+  ❌ Batch gagal           : 1
+  🎯 Total baris sukses    : 120
+  ❌ Total baris error     : 15
+  ⏭️  Total baris dilewati  : 10
+  📝 Log lengkap tersimpan : artifacts/logs/batch_runner/batch_run_2025-12-30_15-17-00.log
+  ⏰ Waktu selesai         : 2025-12-30 16:05:23
+```
+
+### Log File
+
+Semua output disimpan ke file log di `artifacts/logs/batch_runner/batch_run_TIMESTAMP.log` yang berisi:
+- Konfigurasi batch (size, start, total data)
+- Output lengkap dari setiap `sbr_fill.py` execution
+- Ringkasan statistik per batch
+- Peringatan jika ada anomali
+- Ringkasan keseluruhan
+
+### Troubleshooting Batch Runner
+
+**Batch hanya memproses 1 baris:**
+- Periksa log file untuk melihat output detail dari `sbr_fill.py`
+- Kemungkinan ada error yang menghentikan proses
+- Cek apakah data Excel sesuai ekspektasi
+- Pastikan tidak ada resume mode yang melewati baris
+
+**Batch gagal semua:**
+- Pastikan Chrome CDP sudah running
+- Cek koneksi ke MATCHAPRO
+- Periksa file Excel ada di folder `data/`
+- Lihat error detail di log file
+
+**Ingin mengubah ukuran batch:**
+- Edit `BATCH_SIZE` di `batch_runner.py`
+- Batch lebih kecil = lebih aman tapi lebih lama
+- Batch lebih besar = lebih cepat tapi risiko error lebih tinggi
+
+---
+
 ## Struktur Proyek
 
 ```text
 .
 |-- artifacts/              # Arsip log dan screenshot per run
 |   |-- logs/
+|   |   |-- batch_runner/   # Log dari batch_runner.py
+|   |   `-- YYYY-MM-DD/     # Log harian dari sbr_fill.py & sbr_cancel.py
 |   |-- screenshots/
 |   `-- screenshots_cancel/
 |-- data/                   # Tempat menyimpan Excel Profiling (opsional)
 |-- config/                 # Profil CLI dan pemetaan status
 |-- sbr_automation/         # Modul Python otomatisasi (lihat rincian di bawah)
 |-- sbr_fill.py             # Perintah autofill
-`-- sbr_cancel.py           # Perintah cancel submit
+|-- sbr_cancel.py           # Perintah cancel submit
+`-- batch_runner.py         # 🆕 Batch processing dengan logging komprehensif
 ```
 
 - `sbr_fill.py` mengisi form Profiling sesuai Excel.
 - `sbr_cancel.py` membuka form dan menekan tombol _Cancel Submit_.
+- `batch_runner.py` memproses data dalam batch dengan logging detail.
 - Semua log dan screenshot otomatis tersimpan di `artifacts/`.
 
 ### Rincian folder `sbr_automation/`

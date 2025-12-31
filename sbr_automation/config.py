@@ -52,6 +52,11 @@ class RuntimeConfig:
     profile_field_selectors: Mapping[str, str] = field(default_factory=lambda: dict(DEFAULT_PROFILE_FIELD_SELECTORS))
     select2_field_selectors: Mapping[str, str] = field(default_factory=lambda: dict(DEFAULT_SELECT2_FIELD_SELECTORS))
 
+    # Configurable defaults for empty fields
+    default_alamat: str = "Wandaka"
+    default_sumber_profiling: str = "Observasi"
+    default_catatan_profiling: str = "Observasi"
+
     screenshot_dir: Path = DEFAULT_SCREENSHOT_DIR
     cancel_screenshot_dir: Path = DEFAULT_CANCEL_SCREENSHOT_DIR
     log_dir: Path = DEFAULT_LOG_DIR

@@ -2,11 +2,87 @@
 
 ## 🎯 Tujuan Upgrade
 
-Mengoptimalkan proses autofill Direktori Usaha SBR dan menambahkan **notifikasi WhatsApp otomatis** yang dikirim setelah batch running selesai dengan log yang disimplifikasi.
+Mengoptimalkan proses autofill Direktori Usaha SBR dan menambahkan **notifikasi WhatsApp otomatis** yang dikirim setelah batch running selesai dengan log yang disimplifikasi, serta **Batch Runner dengan logging komprehensif** untuk debugging dan monitoring.
 
 ---
 
-## 🆕 Fitur Baru
+## 🆕 Fitur Baru (Update 2025-12-31)
+
+### 3. **Configurable Defaults & Enhanced Notifications** ✨
+
+**Fitur Utama:**
+- ✅ **Default Value Config** - "Wandaka" (Alamat), "Observasi" (Sumber), dll. otomatis diisi jika Excel kosong.
+- ✅ **Smart Defaults** - Logika fallback cerdas (Catatan -> Sumber -> Default).
+- ✅ **Better WA Notifications** - Info range baris (e.g., "Baris 1 - 20") di pesan.
+- ✅ **Navigator Stability** - Timeout ekstra (15s) untuk tab form baru, mengatasi masalah koneksi lambat.
+
+**Problem Solved:**
+- ❌ **Before:** Form error/kosong jika data Excel tidak lengkap; notifikasi WA kurang jelas batch mana yang selesai; error timeout saat buka tab baru.
+- ✅ **After:** Form terisi otomatis dengan default; notifikasi jelas dengan range baris; stabilitas browser lebih baik.
+
+---
+
+## 🆕 Fitur Baru (Update 2025-12-30)
+
+### 2. **Batch Runner Logging Enhancement** 🔥
+
+**Fitur Utama:**
+- ✅ **Comprehensive logging** - Semua output subprocess disimpan ke file log
+- ✅ **Real-time monitoring** - Lihat progress setiap batch di console
+- ✅ **Batch statistics parsing** - Otomatis parse hasil dari sbr_fill.py
+- ✅ **Warning detection** - Peringatan otomatis jika batch tidak sesuai ekspektasi
+- ✅ **Overall summary** - Ringkasan keseluruhan setelah semua batch selesai
+- ✅ **Persistent logs** - Log tersimpan di `artifacts/logs/batch_runner/`
+- ✅ **Auto-continue** - Lanjut ke batch berikutnya meski ada error
+- ✅ **Duration tracking** - Waktu eksekusi per batch dan total
+
+**Problem Solved:**
+- ❌ **Before:** Batch hanya proses 1 baris, tidak tahu kenapa
+- ✅ **After:** Log lengkap menunjukkan exact error dan penyebabnya
+
+**Teknologi:**
+- **subprocess.run** dengan `capture_output=True` untuk menangkap stdout/stderr
+- **Log parsing** untuk ekstrak statistik batch (sukses, error, dilewati)
+- **File logging** dengan timestamp untuk persistent debugging
+- **Smart detection** untuk warning jika processed ≠ expected rows
+
+### 2.1 **Bug Fix: Batch Continuation Logic** 🐛 (Critical)
+
+**Problem:**
+- ❌ Batch runner melompat 30 baris setelah batch selesai
+- ❌ Baris yang gagal tidak dikerjakan ulang
+- ❌ Logic: `current_start += BATCH_SIZE` (selalu +30)
+
+**Example:**
+```
+Batch #1: Baris 151-180 (1 sukses, 1 error)
+Batch #2: Baris 180-209 ❌ SALAH! Seharusnya retry baris yang gagal
+```
+
+**Solution:**
+- ✅ Smart continuation: `next_start = current_end + 1`
+- ✅ Auto-resume mode: `--resume` flag ditambahkan otomatis
+- ✅ Baris yang gagal akan dikerjakan ulang di batch berikutnya
+- ✅ Baris yang sudah OK dilewati otomatis (no duplikasi)
+
+**New Logic:**
+```python
+if stats['processed'] == expected_rows:
+    next_start = current_end + 1  # Lanjut ke batch berikutnya
+elif stats['processed'] > 0:
+    next_start = current_end + 1  # Resume akan handle retry
+else:
+    next_start = current_start    # Retry batch yang sama
+```
+
+**Impact:**
+- 🎯 **Data Integrity**: Tidak ada baris yang terlewat
+- 🚀 **Efficiency**: Tidak ada duplikasi proses
+- 🔄 **Auto-retry**: Baris gagal otomatis dikerjakan ulang
+- ✅ **Smart**: Resume mode skip yang sudah OK
+
+
+---
 
 ### 1. **WhatsApp Notification System** 🔥
 
@@ -77,6 +153,45 @@ Comprehensive setup guide covering:
 ---
 
 ## 🔧 File yang Dimodifikasi
+
+### 0. **batch_runner.py** (Enhanced)
+**Major Rewrite:**
+- Added comprehensive logging system dengan file output
+- Added `setup_logging()` function untuk create log directory dan file
+- Added `log_message()` function untuk dual output (console + file)
+- Added `parse_batch_output()` function untuk extract statistics dari subprocess output
+- Enhanced `run_batch()` dengan:
+  - Subprocess output capture (`capture_output=True`)
+  - Real-time output logging
+  - Batch statistics parsing dan display
+  - Warning detection untuk anomali (processed ≠ expected)
+  - Overall summary dengan total statistics
+  - Duration tracking per batch
+  - Batch success/failure tracking
+
+**New Features:**
+- 📝 Log file di `artifacts/logs/batch_runner/batch_run_TIMESTAMP.log`
+- 📊 Ringkasan per batch (durasi, diharapkan, diproses, sukses, error, dilewati)
+- ⚠️ Warning otomatis jika batch tidak sesuai ekspektasi
+- 📈 Overall summary (total batches, sukses, gagal, total rows)
+- 🔍 Full subprocess output untuk debugging
+
+**Configuration:**
+- `LOG_DIR = Path("artifacts/logs/batch_runner")` - Log directory
+- `START_FROM = 30` - Starting row (configurable)
+- Removed `--stop-on-error` dari subprocess call untuk auto-continue
+- Added `--resume` flag untuk auto-resume mode
+
+**Bug Fixes (v2.1.1):**
+- 🐛 **Critical**: Fixed batch continuation logic
+  - Before: `current_start += BATCH_SIZE` (selalu +30, skip baris gagal)
+  - After: `next_start = current_end + 1` (smart continuation)
+- ✅ Auto-resume mode untuk skip baris yang sudah OK
+- ✅ Retry otomatis untuk baris yang gagal
+- ✅ Prevent infinite loop dengan max 1x retry per batch
+
+
+---
 
 ### 1. **sbr_automation/config.py**
 **Added:**
@@ -193,6 +308,16 @@ pip install -r requirements.txt
 | No WhatsApp support | Full WhatsApp integration |
 | No notification system | Auto-notification setelah batch |
 
+### Batch Runner Monitoring
+| Before | After |
+|--------|-------|
+| No output capture | Full stdout/stderr capture |
+| No batch statistics | Detailed stats per batch |
+| No warning system | Auto-warning jika anomali |
+| No persistent logs | Log file dengan timestamp |
+| Blind execution | Real-time progress monitoring |
+| Manual debugging | Full subprocess output logged |
+
 ### Monitoring
 | Before | After |
 |--------|-------|
@@ -208,10 +333,13 @@ pip install -r requirements.txt
 | Check log untuk tahu hasil | Summary langsung di WhatsApp |
 | No mobile notification | Notif langsung ke HP |
 | Manual check errors | Error details di notification |
+| Batch issues tidak terdeteksi | Warning otomatis untuk anomali |
 
 ---
 
-## 🎨 Example Notification
+## 🎨 Example Output
+
+### WhatsApp Notification
 
 ```
 🤖 *SBR Autofill Report*
@@ -236,6 +364,66 @@ pip install -r requirements.txt
    Note: Exception isi form: Timeout waiting for element
 
 📁 Log: C:\...\log_sbr_autofill_12-01-56.csv
+```
+
+### Batch Runner Output
+
+**Console Output:**
+```
+📝 Log batch runner: artifacts/logs/batch_runner/batch_run_2025-12-30_15-17-00.log
+⏰ Waktu mulai: 2025-12-30 15:17:00
+✅ Total data ditemukan: 150 baris
+🚀 Memulai batch process dari baris 30 dengan ukuran 30...
+
+======================================================================
+▶️  BATCH #1: Baris 30 sampai 59 (Total: 30 baris)
+======================================================================
+
+📋 Output dari sbr_fill.py:
+----------------------------------------------------------------------
+  Memeriksa koneksi Chrome (CDP)...
+  Chrome CDP siap digunakan.
+  Baris 30: PT MAJU JAYA
+  ...
+----------------------------------------------------------------------
+
+📊 RINGKASAN BATCH #1:
+  ⏱️  Durasi        : 45.32 detik
+  📝 Diharapkan    : 30 baris
+  ✅ Diproses      : 30 baris
+  🎯 Sukses        : 28 baris
+  ❌ Error         : 2 baris
+  ⏭️  Dilewati      : 0 baris
+  🔢 Return code   : 0
+
+⏳ Istirahat 5 detik sebelum batch berikutnya...
+```
+
+**Warning Detection:**
+```
+⚠️  PERINGATAN: Hanya 1 dari 30 baris yang diproses!
+   Kemungkinan penyebab:
+   - Error yang menghentikan proses lebih awal
+   - Data Excel tidak sesuai ekspektasi
+   - Resume mode melewati baris tertentu
+   - Periksa log detail di atas untuk informasi lebih lanjut
+```
+
+**Final Summary:**
+```
+======================================================================
+🎉 SEMUA BATCH SELESAI!
+======================================================================
+
+📊 RINGKASAN KESELURUHAN:
+  📦 Total batch dijalankan : 5
+  ✅ Batch sukses          : 4
+  ❌ Batch gagal           : 1
+  🎯 Total baris sukses    : 120
+  ❌ Total baris error     : 15
+  ⏭️  Total baris dilewati  : 10
+  📝 Log lengkap tersimpan : artifacts/logs/batch_runner/batch_run_2025-12-30_15-17-00.log
+  ⏰ Waktu selesai         : 2025-12-30 16:05:23
 ```
 
 ---
@@ -417,6 +605,7 @@ python sbr_fill.py --match-by idsbr --start 1 --end 10
 
 **Enhancements:**
 - WhatsApp Notification System
+- Batch Runner Logging Enhancement
 - Dependency Management (requirements.txt)
 - Comprehensive Documentation
 - Performance Optimizations
@@ -430,6 +619,20 @@ python sbr_fill.py --match-by idsbr --start 1 --end 10
 
 ---
 
-**Version:** 2.0 (dengan WhatsApp Notification)  
+## [2.2.0] - 2025-12-31
+
+### Features
+- **Configurable Defaults**: Menambahkan nilai default otomatis untuk field kosong:
+  - Alamat -> "Wandaka"
+  - Sumber Profiling -> "Observasi"
+  - Catatan Profiling -> "Observasi" (atau fallback ke Sumber Profiling)
+  - Nilai dapat diubah di class `RuntimeConfig` (`sbr_automation/config.py`).
+- **WhatsApp Notification Range**: Menambahkan informasi range baris (contoh: "Baris 1 - 20") pada pesan WhatsApp.
+
+### Improvements
+- **Navigator Stability**: Meningkatkan timeout deteksi tab baru dari 6s menjadi 15s untuk mengatasi error `TimeoutError` pada koneksi lambat.
+- **Error Handling**: Perbaikan handling `UnicodeEncodeError` pada terminal Windows legacy saat mencetak emoji.
+
+**Version:** 2.1.1 (Bug Fix: Batch Continuation Logic)  
 **Date:** 2025-12-30  
 **Status:** ✅ Production Ready

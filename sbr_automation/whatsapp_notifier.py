@@ -36,13 +36,14 @@ class WhatsAppConfig:
     message_template: str = (
         "🤖 *SBR Autofill Report*\\n\\n"
         "📅 Run ID: {run_id}\\n"
+        "🔢 Range: {row_range}\\n"
         "⏰ Started: {started_at}\\n"
         "⏱️ Duration: {duration}\\n\\n"
         "📊 *Summary*\\n"
         "✅ Success: {ok_count}\\n"
         "⚠️ Warnings: {warn_count}\\n"
         "❌ Errors: {error_count}\\n"
-        "📝 Total: {total_count}\\n\\n"
+        "📝 Total Processed: {total_count}\\n\\n"
         "{error_details}\\n"
         "📁 Log: {log_path}"
     )
@@ -53,6 +54,7 @@ class NotificationSummary:
     """Summary data for WhatsApp notification."""
 
     run_id: str
+    row_range: str
     started_at: str
     duration: str
     ok_count: int
@@ -331,6 +333,7 @@ class WhatsAppNotifier:
         """
         return self.config.message_template.format(
             run_id=summary.run_id,
+            row_range=summary.row_range,
             started_at=summary.started_at,
             duration=summary.duration,
             ok_count=summary.ok_count,
@@ -368,7 +371,10 @@ class WhatsAppNotifier:
             return False
 
         print(f"\n{'='*60}")
-        print(f"📱 Mengirim notifikasi WhatsApp ke: {target}")
+        try:
+            print(f"📱 Mengirim notifikasi WhatsApp ke: {target}")
+        except UnicodeEncodeError:
+            print(f"[WA] Mengirim notifikasi WhatsApp ke: {target}")
         print(f"{'='*60}\n")
 
         try:
@@ -422,6 +428,8 @@ def create_notification_summary(
     error_rows: list[dict],
     log_path: str,
     start_time: float,
+    start_row: int | None = None,
+    end_row: int | None = None,
 ) -> NotificationSummary:
     """Create notification summary from run results.
 
@@ -434,6 +442,8 @@ def create_notification_summary(
         error_rows: List of error row dictionaries
         log_path: Path to log file
         start_time: Start time (time.time())
+        start_row: Starting row number
+        end_row: Ending row number
 
     Returns:
         NotificationSummary object
@@ -449,6 +459,14 @@ def create_notification_summary(
         duration = f"{minutes}m {seconds}s"
     else:
         duration = f"{seconds}s"
+
+    # Format row range
+    if start_row and end_row:
+        row_range = f"Baris {start_row} - {end_row}"
+    elif start_row:
+        row_range = f"Baris {start_row}+"
+    else:
+        row_range = "Semua baris"
 
     # Format error details dengan informasi lebih lengkap
     error_details = ""
@@ -491,6 +509,7 @@ def create_notification_summary(
 
     return NotificationSummary(
         run_id=run_id,
+        row_range=row_range,
         started_at=started_at,
         duration=duration,
         ok_count=ok_count,

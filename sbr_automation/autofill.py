@@ -645,6 +645,8 @@ async def process_autofill_with_notification(
                 error_rows=error_rows,
                 log_path=str(log_path),
                 start_time=start_time,
+                start_row=options.start_row,
+                end_row=options.end_row,
             )
 
             # Send notification
@@ -652,9 +654,18 @@ async def process_autofill_with_notification(
             success = notifier.send_notification(summary)
 
             if success:
-                print("\n✅ WhatsApp notification sent successfully!")
+                try:
+                    print("\n✅ WhatsApp notification sent successfully!")
+                except UnicodeEncodeError:
+                    print("\n[OK] WhatsApp notification sent successfully!")
             else:
-                print("\n⚠️  WhatsApp notification failed to send")
+                try:
+                    print("\n⚠️  WhatsApp notification failed to send")
+                except UnicodeEncodeError:
+                    print("\n[WARN] WhatsApp notification failed to send")
 
         except Exception as exc:  # noqa: BLE001
-            print(f"\n❌ Error sending WhatsApp notification: {exc}")
+            try:
+                print(f"\n❌ Error sending WhatsApp notification: {exc}")
+            except UnicodeEncodeError:
+                print(f"\n[ERROR] Error sending WhatsApp notification: {exc}")

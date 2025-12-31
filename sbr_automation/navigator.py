@@ -48,7 +48,9 @@ async def open_form_page(
     await page.wait_for_timeout(config.pause_after_edit_ms)
 
     try:
-        new_page = await context.wait_for_event("page", timeout=config.max_wait_ms)
+        # Increase timeout for new tab detection (min 15s)
+        wait_time = max(config.max_wait_ms, 15000)
+        new_page = await context.wait_for_event("page", timeout=wait_time)
         return new_page, "Tab form baru terdeteksi (event page).", ""
     except PlaywrightError as exc:
         exc_detail = describe_exception(exc)

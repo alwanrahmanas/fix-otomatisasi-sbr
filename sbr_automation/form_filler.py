@@ -337,23 +337,36 @@ async def _fill_additional_fields(page: Page, ctx: RowContext, config: RuntimeCo
     updated = 0
     errors: list[str] = []
 
-    if nonempty(ctx.sumber):
+    sumber_value = ctx.sumber
+    if not nonempty(sumber_value) and config.default_sumber_profiling:
+         sumber_value = config.default_sumber_profiling
+         _form_log(f"Sumber Profiling kosong → pakai default: {sumber_value}")
+
+    if nonempty(sumber_value):
         try:
-            await page.get_by_placeholder(re.compile("Sumber Profiling", re.I)).fill(ctx.sumber)
-            _form_log(f"Sumber Profiling diisi: {ctx.sumber}")
+            await page.get_by_placeholder(re.compile("Sumber Profiling", re.I)).fill(sumber_value)
+            _form_log(f"Sumber Profiling diisi: {sumber_value}")
             updated += 1
         except Exception as exc:  # noqa: BLE001
             errors.append(f"sumber_profiling: {describe_exception(exc)}")
             _form_log(f"Field Sumber Profiling tidak ditemukan: {describe_exception(exc)}")
         await slow_pause(page, config)
     else:
-        _form_log("Sumber Profiling dilewati (Excel kosong).")
+        _form_log("Sumber Profiling dilewati (Excel & default kosong).")
 
-    # Jika catatan kosong, coba fallback ke sumber_profiling
+    # Logika Catatan:
+    # 1. Pakai dari Excel (ctx.catatan)
+    # 2. Jika kosong, pakai default dari config (config.default_catatan_profiling)
+    # 3. Jika masih kosong, fallback ke nilai Sumber Profiling yang dipakai
     catatan_value = ctx.catatan
-    if not nonempty(catatan_value) and nonempty(ctx.sumber):
-        catatan_value = ctx.sumber
-        _form_log(f"Catatan kosong → diisi otomatis dengan Sumber Profiling: {catatan_value}")
+    
+    if not nonempty(catatan_value) and config.default_catatan_profiling:
+        catatan_value = config.default_catatan_profiling
+        _form_log(f"Catatan kosong → pakai default: {catatan_value}")
+
+    if not nonempty(catatan_value) and nonempty(sumber_value):
+        catatan_value = sumber_value
+        _form_log(f"Catatan kosong → fallback ke Sumber Profiling: {catatan_value}")
 
     if nonempty(catatan_value):
         try:
@@ -377,7 +390,7 @@ async def _fill_additional_fields(page: Page, ctx: RowContext, config: RuntimeCo
             _form_log(f"Gagal mengisi catatan: {describe_exception(exc)}")
         await slow_pause(page, config)
     else:
-        _form_log("Catatan Profiling dilewati (Excel & fallback kosong).")
+        _form_log("Catatan Profiling dilewati (Excel & default & fallback kosong).")
 
 
     return {"updated": updated, "errors": errors}
@@ -526,12 +539,20 @@ async def _fill_profile_payload_fields(page: Page, ctx: RowContext, config: Runt
             errors.extend(result.get("errors", []))
             continue
 
+        # Ambil nilai dari payload
+        val = ctx.profiling_payload.get(key, "")
+
+        # Apply default for 'alamat_pembetulan'
+        if key == "alamat_pembetulan" and not nonempty(val) and config.default_alamat:
+            val = config.default_alamat
+            _form_log(f"Alamat kosong → pakai default: {val}")
+
         select_selector = select2_selectors.get(key)
         if select_selector:
             success, status = await update_select2_field(
                 page,
                 select_selector,
-                ctx.profiling_payload.get(key, ""),
+                val,
                 key,
             )
             if status == "skip":
@@ -548,7 +569,7 @@ async def _fill_profile_payload_fields(page: Page, ctx: RowContext, config: Runt
             skipped += 1
             continue
 
-        success, status = await update_field(page, selector, ctx.profiling_payload.get(key, ""), key, None)
+        success, status = await update_field(page, selector, val, key, None)
         if status == "skip":
             skipped += 1
         elif success:
