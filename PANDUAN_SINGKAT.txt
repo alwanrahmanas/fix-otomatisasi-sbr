@@ -1,0 +1,281 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║              🤖 PANDUAN SINGKAT OTOMATISASI SBR                              ║
+║                   Untuk Pengguna Awam                                        ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📌 APA ITU OTOMATISASI SBR?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Software ini membantu Anda mengisi Profiling SBR di MATCHAPRO secara otomatis
+dari file Excel. Hemat waktu dan mengurangi kesalahan input manual!
+
+
+🚀 CARA MENGGUNAKAN (3 LANGKAH MUDAH)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ LANGKAH 1: INSTALASI (Hanya Sekali)                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   1. Klik 2x file: 1_install.bat
+   2. Tunggu proses instalasi selesai (5-10 menit)
+   3. Jika berhasil, akan muncul pesan "INSTALASI SELESAI!"
+
+   ⚠️ JIKA ERROR "Python tidak ditemukan":
+      → Install Python dari: https://www.python.org/downloads/
+      → PENTING: Centang "Add Python to PATH" saat instalasi!
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ LANGKAH 2: BUKA CHROME DAN LOGIN                                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   1. Klik 2x file: 2_buka_chrome.bat
+   2. Chrome akan terbuka otomatis
+   3. Login ke: https://matchapro.web.bps.go.id/
+   4. Buka menu "Direktori Usaha"
+   5. JANGAN TUTUP Chrome - biarkan tetap terbuka!
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ LANGKAH 3: JALANKAN AUTOFILL                                                │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   1. Letakkan file Excel di folder "data"
+   2. Klik 2x file: 3_jalankan_autofill.bat
+   3. Isi pertanyaan yang muncul:
+      
+      📁 File Excel: (tekan Enter jika sudah di folder data)
+      📊 Mulai dari baris: 1
+      📊 Sampai baris: 10
+      🔍 Metode: 1 (IDSBR)
+      ⚠️ Stop on error: Y
+      📱 WhatsApp: N
+   
+   4. Tekan Enter untuk mulai
+   5. Tunggu proses selesai - JANGAN TUTUP Chrome!
+
+   ✅ HASIL:
+      - Log tersimpan di: artifacts\logs\
+      - Screenshot tersimpan di: artifacts\screenshots\
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📁 FILE-FILE PENTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   1_install.bat           → Instalasi pertama kali
+   2_buka_chrome.bat       → Buka Chrome untuk autofill
+   3_jalankan_autofill.bat → Jalankan autofill (UTAMA)
+   4_batch_runner.bat      → Proses data banyak (ratusan/ribuan)
+   5_cancel_submit.bat     → Batalkan submit data
+   6_bersihkan_file.bat    → Bersihkan file lama/temporary
+
+   data\                   → Letakkan file Excel di sini
+   config\                 → File konfigurasi (WhatsApp, dll)
+   artifacts\logs\         → Hasil log autofill
+   artifacts\screenshots\  → Screenshot hasil
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+✨ FITUR TAMBAHAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🔄 BATCH RUNNER - Proses Data Banyak                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   Untuk memproses ratusan atau ribuan data sekaligus:
+   
+   1. Klik 2x file: 4_batch_runner.bat
+   2. Script akan otomatis:
+      - Membagi data menjadi batch kecil (30 baris per batch)
+      - Memproses satu per satu
+      - Lanjut otomatis jika ada yang gagal
+      - Kirim laporan lengkap
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 📱 NOTIFIKASI WHATSAPP                                                      │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   Kirim laporan otomatis ke WhatsApp setelah proses selesai!
+   
+   Setup:
+   1. Copy file: config\whatsapp.example.json → config\whatsapp.json
+   2. Edit config\whatsapp.json:
+      - enabled: true
+      - phone_number: "+6281234567890"
+   3. Saat autofill, pilih Y untuk WhatsApp
+   4. Scan QR code (hanya pertama kali)
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ ❌ CANCEL SUBMIT                                                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   Untuk membatalkan submit data:
+   
+   1. Klik 2x file: 5_cancel_submit.bat
+   2. Isi range baris yang ingin di-cancel
+   3. Script akan otomatis buka form dan klik "Cancel Submit"
+
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🧹 BERSIHKAN FILE                                                           │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+   Untuk membersihkan file lama dan temporary:
+   
+   1. Klik 2x file: 6_bersihkan_file.bat
+   2. Script akan hapus:
+      - Log lama (>30 hari)
+      - Screenshot lama (>30 hari)
+      - File cache Python
+      - File temporary
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+🔧 TROUBLESHOOTING (Mengatasi Masalah)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ ERROR: "Python tidak ditemukan"
+   SOLUSI:
+   1. Install Python dari: https://www.python.org/downloads/
+   2. PENTING: Centang "Add Python to PATH" saat instalasi
+   3. Restart komputer
+   4. Jalankan ulang 1_install.bat
+
+❌ ERROR: "Chrome tidak ditemukan"
+   SOLUSI:
+   1. Install Google Chrome dari: https://www.google.com/chrome/
+   2. Install di lokasi default
+   3. Jalankan ulang 2_buka_chrome.bat
+
+❌ ERROR: "Tidak menemukan tombol Edit"
+   SOLUSI:
+   1. Pastikan Chrome sudah login ke MATCHAPRO
+   2. Pastikan menu "Direktori Usaha" sudah terbuka
+   3. Pastikan kolom IDSBR/Nama di Excel terisi
+   4. Cek screenshot di artifacts\screenshots\
+
+❌ ERROR: "Form sedang dikunci pengguna lain"
+   SOLUSI:
+   - Ini normal jika ada orang lain sedang edit
+   - Script akan skip dan lanjut ke data berikutnya
+   - Jalankan ulang nanti untuk data yang di-skip
+
+❌ Chrome tidak bisa dibuka / Error CDP
+   SOLUSI:
+   1. Tutup semua jendela Chrome
+   2. Jalankan ulang 2_buka_chrome.bat
+   3. Tunggu sampai Chrome terbuka
+   4. Login ke MATCHAPRO
+   5. Baru jalankan autofill
+
+⚠️ Proses lambat / timeout
+   SOLUSI:
+   - Kurangi jumlah data per batch
+   - Pastikan koneksi internet stabil
+   - Tutup aplikasi lain yang berat
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+❓ FAQ (PERTANYAAN UMUM)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Q: Apakah aman digunakan?
+A: Ya! Software ini hanya mengisi form seperti yang Anda lakukan manual.
+
+Q: Apakah perlu koneksi internet?
+A: Ya, karena mengakses MATCHAPRO yang online.
+
+Q: Berapa lama proses untuk 100 data?
+A: Tergantung koneksi internet, biasanya 5-10 menit.
+
+Q: Apakah data Excel harus format tertentu?
+A: Ya, harus format resmi Profiling SBR dari BPS.
+
+Q: Bagaimana cara lihat hasil/log?
+A: Buka folder artifacts\logs\ untuk log CSV/HTML
+   Buka folder artifacts\screenshots\ untuk screenshot
+
+Q: Apakah bisa pause di tengah proses?
+A: Tidak direkomendasikan. Jika terpaksa, tekan Ctrl+C lalu jalankan
+   ulang dengan opsi --resume.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📝 CATATAN PENTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ PERHATIAN:
+   - Pastikan Chrome TIDAK DITUTUP saat proses berjalan
+   - Jangan edit data di MATCHAPRO secara manual saat autofill berjalan
+   - Backup file Excel sebelum memproses
+   - Cek hasil di log setelah proses selesai
+
+✅ TIPS:
+   - Mulai dengan data kecil (10-20 baris) untuk testing
+   - Aktifkan "Stop on error" untuk debugging
+   - Gunakan Batch Runner untuk data besar (>100 baris)
+   - Setup WhatsApp untuk monitoring jarak jauh
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📚 DOKUMENTASI LENGKAP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Untuk panduan lebih detail, buka file:
+
+   README.md            → Panduan lengkap dengan semua fitur
+   WHATSAPP_SETUP.md    → Setup WhatsApp lengkap
+   CHANGELOG.md         → Riwayat perubahan versi
+   UPDATE_SUMMARY.md    → Ringkasan update terbaru
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📞 BANTUAN & DUKUNGAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Jika mengalami masalah:
+   1. Cek Troubleshooting di atas
+   2. Lihat log error di artifacts\logs\
+   3. Lihat screenshot di artifacts\screenshots\
+   4. Hubungi tim IPDS BPS Kabupaten Bulungan
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+🎉 SELAMAT MENGGUNAKAN!
+
+Software ini dibuat untuk memudahkan pekerjaan Anda.
+Jika ada saran atau masukan, silakan hubungi tim pengembang.
+
+Kredit:
+- Pengembang Awal: Yuneko/Uul - BPS Kabupaten Buru Selatan
+- Pengembang Lanjutan: Tim IPDS BPS Kabupaten Bulungan
+
+Versi: 2.0
+Terakhir Diperbarui: Januari 2026
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Happy Automating! 🚀
